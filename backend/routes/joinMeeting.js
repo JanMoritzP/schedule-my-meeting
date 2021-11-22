@@ -28,3 +28,5 @@ router.get('/joinMeeting', (req, res) => {
         }
     })
 })
+
+module.exports = router

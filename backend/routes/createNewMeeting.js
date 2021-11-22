@@ -9,7 +9,7 @@ router.use((req, res, next) => {
     next();
 })
 
-const Meeting = require('./../Schema/Meeting')
+const Meeting = require('../Schema/Meeting')
 mongoose.connect('mongodb://localhost:27017/scheduleMeeting', {useNewUrlParser:true, useUnifiedTopology:true})
 
 router.post('/createNewMeeting', (req, res) => {
