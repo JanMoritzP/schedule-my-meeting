@@ -12,7 +12,8 @@ router.use((req, res, next) => {
 const Meeting = require('./../Schema/Meeting')
 mongoose.connect('mongodb://localhost:27017/scheduleMeeting', {useNewUrlParser:true, useUnifiedTopology:true})
 
-router.get('/checkUniqueMeeting', (req, res) => {
+router.post('/checkUniqueMeeting', (req, res) => {
+    console.log(req.body)
     Meeting.findOne({name: req.body.name}, (err, meeting) => {
         if(err) res.status(500).send({message: 'Error accessing the database'})
         else if(meeting) res.status(409).send({messsage: 'This name is not unique'})
