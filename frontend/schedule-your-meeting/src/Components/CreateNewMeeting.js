@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateNewMeeting() {
-
     const [name, setName] = useState("");
     const [uniqueCheck, setUniqueCheck] = useState("X")
+    const navigate = useNavigate();
+    
+
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -22,7 +25,13 @@ export default function CreateNewMeeting() {
                 })
             })
             .then(res => {
-                
+                if(res.status === 200) {
+                    localStorage.setItem('password', e.target.password.value)
+                    navigate("/meeting/" + name)
+                }
+                else {
+                    console.log(res);
+                }
             })
         }
     }

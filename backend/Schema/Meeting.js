@@ -3,13 +3,13 @@ const crypto = require('crypto')
 
 const MeetingSchema = mongoose.Schema({
     participants: [String],
-    participantAmount: Number,
-    timeData: String,
+    participantAmount: {type: String, required: true},
+    timeData: [String],
     hash: String,
     salt: String,
-    name: {type: String, unique: true},
-    startingDate: String,
-    endingDate: String
+    name: {type: String, unique: true, required: true},
+    startingDate: {type: String, required: true},
+    endingDate: {type: String, required: true}
 })
 
 MeetingSchema.methods.setPassword = function(password) {

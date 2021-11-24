@@ -18,7 +18,7 @@ function App() {
           
           <Routes>
             <Route path="/createNewMeeting/" element={<CreateNewMeeting/>}/>
-            <Route path="/meeting/:id" element={<Meeting/>}/>
+            <Route path="/meeting/:name" element={<Meeting/>}/>
             <Route path="/" element={<DefaultPage/>}/>
             <Route path="/yourTimes" element={<YourTimes/>}/>
           </Routes>
