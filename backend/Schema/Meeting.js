@@ -7,7 +7,9 @@ const MeetingSchema = mongoose.Schema({
     timeData: String,
     hash: String,
     salt: String,
-    name: {type: String, unique: true}
+    name: {type: String, unique: true},
+    startingDate: String,
+    endingDate: String
 })
 
 MeetingSchema.methods.setPassword = function(password) {

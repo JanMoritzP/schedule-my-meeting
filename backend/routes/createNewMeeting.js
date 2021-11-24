@@ -19,8 +19,9 @@ router.post('/createNewMeeting', (req, res) => {
         else {
             let newMeeting = new Meeting();
             newMeeting.name = req.body.name;
+            newMeeting.startingDate = req.body.startingDate;
+            newMeeting.endingDate = req.body.endingDate;
             newMeeting.participantAmount = req.body.participantAmount;
-            newMeeting.participants.push = req.body.user;
             newMeeting.setPassword(req.body.password);
             newMeeting.save((err, meeting) => {
                 if(err) res.status(500).send({message: "There has been an error accessing the database"})

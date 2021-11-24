@@ -14,7 +14,6 @@ const Meeting = require('./../Schema/Meeting')
 //mongoose.connect('mongodb://localhost:27017/scheduleMeeting', {useNewUrlParser:true, useUnifiedTopology:true})
 
 router.post('/checkUniqueMeeting', (req, res) => {
-    console.log(req.body)
     if(req.body === "") return res.status(409).send({message: 'You have to enter a name for the meeting'})
     Meeting.findOne({name: req.body.name}, (err, meeting) => {
         if(err) res.status(500).send({message: 'Error accessing the database'})
