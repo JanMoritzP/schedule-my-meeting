@@ -11,19 +11,19 @@ export default function CreateNewMeeting() {
     useEffect(() => {
         const delayUniqueNameCheck = setTimeout(() => {
             //Send the request here
-            console.log(name)
-            fetch("http://localhost:3080/checkUniqueMeeting", {
+            if(name !== "") {
+                fetch("http://localhost:3080/checkUniqueMeeting", {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: {
-                    name: name
-                }
-            })
-            .then(data => {
-                console.log(data)
-            })
+                body: JSON.stringify({name: name})
+                })
+                .then(data => {
+                    console.log(data)
+                })
+            }
+            
         }, 500) //ms
         return () => clearTimeout(delayUniqueNameCheck)
     }, [name])
