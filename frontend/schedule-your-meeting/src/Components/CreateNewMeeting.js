@@ -118,7 +118,16 @@ export default function CreateNewMeeting() {
         return () => clearTimeout(delayUniqueNameCheck)
     }, [name])
 
-    
+    const calcEndingDate = async e => {
+        const minDate = getMinDate(e.target.value).split('-');
+        const endingDateArray = endingDate.split('-');
+        if(endingDateArray[0] > minDate[0]) return;
+        else if(endingDateArray[0] < minDate[0]) return setEndingDate(getMinDate(e.target.value));
+        else if(endingDateArray[1] > minDate[1]) return;
+        else if(endingDateArray[1] < minDate[1]) return setEndingDate(getMinDate(e.target.value));        
+        else if(endingDate[2] > minDate[2]) return;
+        else return setEndingDate(getMinDate(e.target.value))
+    }
 
     return(
         <div>
@@ -131,7 +140,7 @@ export default function CreateNewMeeting() {
                 <label for="startingDate">Starting Date</label>
                 <input type="date" id="startingDate" name="startingDate"
                 min={date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()} value={startingDate}
-                onChange={e => {setStartingDate(e.target.value);setEndingDate(getMinDate(e.target.value))}}></input>
+                onChange={e => {setStartingDate(e.target.value);calcEndingDate(e)}}></input>
                 <label for="endingDate">Ending Date</label>       
                 <input type="date" id="endingDate" name="endingDate" min={getMinDate(startingDate)} value={endingDate} onChange={e => setEndingDate(e.target.value)}></input>     
                 <label for="participantAmount">Amount of participants</label>

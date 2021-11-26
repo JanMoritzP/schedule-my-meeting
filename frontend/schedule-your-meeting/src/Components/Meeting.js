@@ -50,6 +50,12 @@ export default function Meeting() {
         })
         .then(res => {
             if(res.status === 200) setConfirmed(true);
+            else {
+                if(res.status === 409) {
+                    navigate('/')
+                }
+                setConfirmed(false)
+            }
             return res.json()
         })
         .then(data => putInfoInPage(data))
@@ -92,7 +98,13 @@ export default function Meeting() {
             })
         })
         .then(res => {
-            if(res.status === 200) setConfirmed(true);
+            if(res.status === 200) setConfirmed(true)
+            else {
+                if(res.status === 409) {
+                    navigate('/')
+                }
+                setConfirmed(false)
+            }
             return res.json()
         })
         .then(data => putInfoInPage(data))
