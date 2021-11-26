@@ -22,7 +22,9 @@ router.post('/joinMeeting', (req, res) => {
                 res.status(200).send({
                     timeData: meeting.timeData,
                     participants: meeting.participants,
-                    participantAmount: meeting.participantAmount
+                    participantAmount: meeting.participantAmount,
+                    startingDate: meeting.startingDate,
+                    endingDate: meeting.endingDate
                 })
             }
         }
