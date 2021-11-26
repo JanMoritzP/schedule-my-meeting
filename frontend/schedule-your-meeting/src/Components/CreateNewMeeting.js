@@ -16,7 +16,6 @@ export default function CreateNewMeeting() {
                 }
             }
             else {
-                console.log(year + "-" + pad2(month) + "-" + pad2(parseInt(day) + 1))
                 return year + "-" + pad2(month) + "-" + pad2(parseInt(day) + 1)
             }
         }
