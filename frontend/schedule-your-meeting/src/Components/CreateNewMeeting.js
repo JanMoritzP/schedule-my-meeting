@@ -61,7 +61,7 @@ export default function CreateNewMeeting() {
     
     const [name, setName] = useState("");
     const [uniqueCheck, setUniqueCheck] = useState("X")
-    const [startingDate, setStartingDate] = useState(date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate());
+    const [startingDate, setStartingDate] = useState(date.getFullYear() + "-" + pad2(date.getMonth()) + "-" + pad2(date.getDate()));
     const [endingDate, setEndingDate] = useState(getMinDate(startingDate));
     const navigate = useNavigate();
 

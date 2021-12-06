@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 export default function Meeting() {
     let {name} = useParams()
-    var calendar;
+    const [calendar, setCalendar] = useState();
     const [info, setInfo] = useState();
     const [password, setPassword] = useState();
     const [confirmed, setConfirmed] = useState(false);
@@ -110,28 +110,86 @@ export default function Meeting() {
         .then(data => putInfoInPage(data))
     }
 
+    const pad2 = string => {
+        if(string < 10) {
+            return "0" + parseInt(string)
+        }
+        else return string
+    }
+
     const putInfoInPage = data => {
         let timeData = data.timeData;
         let participants = data.participants;
         let participantAmount = data.participantAmount;
-        let startingDate = data.startingDate;
-        let endingDate = data.endingDate;
+        let startingDate = new Date(data.startingDate);
+        let endingDate = new Date(data.endingDate);
 
         setInfo(
             <div>
-            <p>Starting Date: {startingDate}</p>
-            <p>Ending Date: {endingDate}</p>
+            <p>Starting Date: {startingDate.toString()}</p>
+            <p>Ending Date: {endingDate.toString()}</p>
             </div>
         )
+        var tableHeads = [];
+        const dateDifference = (endingDate - startingDate)/(1000*3600*24) + 1 //This gives days after the division
+        for (let i = 0; i < dateDifference; i++) {
+            if(i === 0)  tableHeads.push(new Date(startingDate))
+            else {
+                tableHeads.push(new Date(tableHeads[i - 1]))
+                tableHeads[i].setDate(tableHeads[i].getDate() + 1)
+            }
+        }
 
-        calendar = (
+        //Create times array
+        var times = [];
+        for (let i = 1; i < 96; i++) {
+            times.push(((i/4) | 0) + ":" + pad2(i*15 % 60));  //The | operation is to truncate the float, it is the fastest operation https://stackoverflow.com/questions/596467/how-do-i-convert-a-float-number-to-a-whole-number-in-javascript
+        }
+
+        function timeSlot(dayIndex, time) {
+            this.dayIndex = dayIndex
+            this.time = time
+        }
+
+        var data = [];
+    
+        for(let i = 1; i < 96 * dateDifference; i++) {
+            data.push(new timeSlot(i/96 | 0, ((i%96/4) | 0) + ":" + pad2(i%96*15 % 60)))
+        }
+
+        var bodyData = [] //I need the data to be aligned in rows, not in columns, so i will put all the strings in this bodyData array;
+        
+        for(let i = 0; i < 95; i++) {
+            var cell = []
+            cell.push(times[i])
+            for(let k = 0; k <  data.length/96 | 0; k++) {
+                cell.push(data[k*96 + i])
+            }
+            bodyData.push(cell)
+        }
+
+        setCalendar(
             <div>
                 <table>
                     <thead>
-                        <th>Table Head</th>
+                        <tr>
+                            <th>Times</th>
+                            {tableHeads.map(date => 
+                                <th>
+                                    {date.toString()}
+                                </th>
+                            )}
+                       </tr>
                     </thead>
                     <tbody>
-                        <td>Table Data</td>
+                        {bodyData.map(cell =>
+                            <tr>
+                                <td>{cell.shift()}</td>
+                                {cell.map(times => 
+                                    <td>{times.time}</td>
+                                )}
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
@@ -163,6 +221,7 @@ export default function Meeting() {
         <div>
             <h2>Please provide times for this meeting</h2>
             {info}
+            {calendar}
             <button onClick={save}>Save</button>
             <button onClick={copyLink}>Copy Link</button>
         </div>
