@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
+import './css/Meeting.css'
 
 export default function Meeting() {
     let {name} = useParams()
@@ -7,6 +8,7 @@ export default function Meeting() {
     const [info, setInfo] = useState();
     const [password, setPassword] = useState();
     const [confirmed, setConfirmed] = useState(false);
+    var select = false;
     const navigate = useNavigate();
     
     useEffect(() => {
@@ -94,11 +96,14 @@ export default function Meeting() {
             },
             body: JSON.stringify({
                 name: name,
-                password: localStorage.getItem('password')
+                password: password
             })
         })
         .then(res => {
-            if(res.status === 200) setConfirmed(true)
+            if(res.status === 200) {
+                setConfirmed(true)
+                localStorage.setItem('password', password)
+            }
             else {
                 if(res.status === 409) {
                     navigate('/')
@@ -168,6 +173,21 @@ export default function Meeting() {
             bodyData.push(cell)
         }
 
+        const handleEnter = async e => {
+            if(select) {
+                if(e.target.className === 'cell')  e.target.className = 'selected'
+                else e.target.className = 'cell'
+            }
+        }
+        
+        const handleMouseDown = async e => {
+            select = true
+        }
+
+        const handleMouseUp = async e => {
+            select = false
+        }
+
         setCalendar(
             <div>
                 <table>
@@ -181,12 +201,12 @@ export default function Meeting() {
                             )}
                        </tr>
                     </thead>
-                    <tbody>
+                    <tbody onMouseDown={e=>handleMouseDown(e)} onMouseUp={e=>handleMouseUp(e)}>
                         {bodyData.map(cell =>
                             <tr>
                                 <td>{cell.shift()}</td>
                                 {cell.map(times => 
-                                    <td>{times.time}</td>
+                                    <td class="cell" onMouseEnter={e=>handleEnter(e)}>{times.time}</td>
                                 )}
                             </tr>
                         )}
