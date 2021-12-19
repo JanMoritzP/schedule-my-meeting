@@ -237,6 +237,7 @@ export default function Meeting() {
                         let checked = false
                         var timeId = time2number(e.target.id.split(';')[0]) - 1
                         var day = e.target.id.split(';')[1]
+                        console.log(day)
                         if(day <= 0) day = 0
                         if(timeId < 0) {
                             day = day - 1
@@ -274,11 +275,13 @@ export default function Meeting() {
                 let checkingId = time2number(currentTime) - 1;
                 let checkingDay = currentDay;
                 if(checkingId < 0) {
-                    checkingId = 95
-                    if(checkingDay = 0) checked = true;
-                    else checkingDay = checkingDay - 1
+                    if(checkingDay == 0) checked = true;
+                    else {
+                        checkingDay = checkingDay - 1
+                        checkingId = 95
+                    }
                 }
-                while(!checked) {
+                while(!checked) {  //Check backwards
                     if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
                         document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.remove('selected')
                         if(checkingId == 0) {
@@ -304,16 +307,16 @@ export default function Meeting() {
                     else checkingDay = parseInt(checkingDay) + 1
                     checkingId = 0
                 }
-                while(!checked) {
+                while(!checked) {  //Check forwards
                     if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
                         document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.remove('selected')
                         if(checkingId == 95) {
-                            if(checkingDay == maxDays) { //All the way up left
+                            if(checkingDay == maxDays) { 
                                 checked = true
                             }
                             else {
                                 checkingDay = parseInt(checkingDay) + 1;
-                                checkingId = 0 //95 because you check backwards
+                                checkingId = 0 
                             }
                         }
                         else checkingId = parseInt(checkingId) + 1
