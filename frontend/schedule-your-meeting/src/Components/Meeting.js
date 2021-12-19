@@ -104,10 +104,14 @@ export default function Meeting() {
         const dateDifference = (endingDate - startingDate)/(1000*3600*24) + 1 //This gives days after the division
         maxDays = dateDifference
         for (let i = 0; i < dateDifference; i++) {
-            if(i === 0)  tableHeads.push(new Date(startingDate))
+            if(i === 0)  {
+                tableHeads.push(new Date(startingDate))
+                tableHeads[0] = tableHeads[0].getDate() + "/" + tableHeads[0].getMonth() + "/" + tableHeads[0].getFullYear();
+            }
             else {
                 tableHeads.push(new Date(tableHeads[i - 1]))
                 tableHeads[i].setDate(tableHeads[i].getDate() + 1)
+                tableHeads[i] = tableHeads[i].getDate() + "/" + tableHeads[i].getMonth() + "/" + tableHeads[i].getFullYear();
             }
         }
 
