@@ -245,6 +245,7 @@ export default function Meeting() {
                         }
                         while(!checked) {
                             if(day < 0) day = 0  //Check for errors to the left top, which can occur when user moves mouse wildy
+                            if(day == lastSelectedDay && timeId == time2number(lastSelectedTime)) checked = true;
                             if(!document.getElementById(number2time(timeId) + ';' + day).classList.contains('selected')) {
                                 document.getElementById(number2time(timeId) + ';' + day).classList.add('selected')
                                 timeId = timeId - 1
