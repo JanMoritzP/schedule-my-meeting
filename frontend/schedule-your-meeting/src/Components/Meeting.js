@@ -116,10 +116,10 @@ export default function Meeting() {
         }
 
         //Create times array
-        var times = [];
-        for (let i = 0; i < 96; i++) {
-            times.push(((i/4) | 0) + ":" + pad2(i*15 % 60));  //The | operation is to truncate the float, it is the fastest operation https://stackoverflow.com/questions/596467/how-do-i-convert-a-float-number-to-a-whole-number-in-javascript
-        }
+        //var times = [];
+        //for (let i = 0; i < 96; i++) {
+        //    times.push(((i/4) | 0) + ":" + pad2(i*15 % 60));  //The | operation is to truncate the float, it is the fastest operation https://stackoverflow.com/questions/596467/how-do-i-convert-a-float-number-to-a-whole-number-in-javascript
+        //}
 
         function timeSlot(dayIndex, time) {
             this.dayIndex = dayIndex
@@ -136,7 +136,7 @@ export default function Meeting() {
         
         for(let i = 0; i < 96; i++) {
             var cell = []
-            cell.push(times[i])
+            //cell.push(times[i])
             for(let k = 0; k <  data.length/96 | 0; k++) {
                 cell.push(data[k*96 + i])
             }
@@ -348,7 +348,6 @@ export default function Meeting() {
                 <table>
                     <thead>
                         <tr>
-                            <th>Times</th>
                             {tableHeads.map(date => 
                                 <th>
                                     {date.toString()}
@@ -359,7 +358,6 @@ export default function Meeting() {
                     <tbody onMouseDown={e=>handleMouseDown(e)} onMouseUp={e=>handleMouseUp(e)}>
                         {bodyData.map(cell =>
                             <tr>
-                                <td class='firstRow'>{cell.shift()}</td>
                                 {cell.map(times => 
                                     <td class="cell" id={times.time + ";" + times.dayIndex} onMouseEnter={e=>handleEnter(e)}>{times.time}</td>
                                 )}
