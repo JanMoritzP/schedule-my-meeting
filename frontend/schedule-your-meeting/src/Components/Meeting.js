@@ -8,6 +8,10 @@ export default function Meeting() {
     const [info, setInfo] = useState();
     const [password, setPassword] = useState();
     const [confirmed, setConfirmed] = useState(false);
+    const [type, setType] = useState("perfect");
+    const [perfectChecked, setPerfectChecked] = useState(true);
+    const [worksChecked, setWorksChecked] = useState(false);
+    const [ratherNotChecked, setRatherNotChecked] = useState(false);
     var mouseDown = false;
     var maxDays = 0;
     var lastSelectedDay = null;
@@ -87,6 +91,12 @@ export default function Meeting() {
         return hours + ':' + minutes
     }
 
+    function getRadioChoice() {
+        if(document.getElementById("perfectRadio").checked) return "perfect"
+        if(document.getElementById("worksRadio").checked) return "works"
+        if(document.getElementById("ratherNotRadio").checked) return "ratherNot"
+    }
+
     const putInfoInPage = data => {
         let timeData = data.timeData;
         let participants = data.participants;
@@ -100,26 +110,21 @@ export default function Meeting() {
             <p>Ending Date: {endingDate.toString()}</p>
             </div>
         )
-        var tableHeads = [];
+        var tableHeads = []
+        var dates =[]
         const dateDifference = (endingDate - startingDate)/(1000*3600*24) + 1 //This gives days after the division
         maxDays = dateDifference
         for (let i = 0; i < dateDifference; i++) {
             if(i === 0)  {
-                tableHeads.push(new Date(startingDate))
-                tableHeads[0] = tableHeads[0].getDate() + "/" + tableHeads[0].getMonth() + "/" + tableHeads[0].getFullYear();
+                dates.push(new Date(startingDate))
+                tableHeads[0] = dates[0].getDate() + "/" + (parseInt(dates[0].getMonth()) + 1) + "/" + dates[0].getFullYear();  //Yes, getMonth() is 0-indexed....goddamnit
             }
             else {
-                tableHeads.push(new Date(tableHeads[i - 1]))
-                tableHeads[i].setDate(tableHeads[i].getDate() + 1)
-                tableHeads[i] = tableHeads[i].getDate() + "/" + tableHeads[i].getMonth() + "/" + tableHeads[i].getFullYear();
+                dates.push(new Date(dates[i - 1]))
+                dates[i].setDate(dates[i].getDate() + 1)
+                tableHeads[i] = dates[i].getDate() + "/" + (parseInt(dates[i].getMonth()) + 1) + "/" + dates[i].getFullYear();
             }
-        }
-
-        //Create times array
-        //var times = [];
-        //for (let i = 0; i < 96; i++) {
-        //    times.push(((i/4) | 0) + ":" + pad2(i*15 % 60));  //The | operation is to truncate the float, it is the fastest operation https://stackoverflow.com/questions/596467/how-do-i-convert-a-float-number-to-a-whole-number-in-javascript
-        //}
+        }        
 
         function timeSlot(dayIndex, time) {
             this.dayIndex = dayIndex
@@ -136,7 +141,6 @@ export default function Meeting() {
         
         for(let i = 0; i < 96; i++) {
             var cell = []
-            //cell.push(times[i])
             for(let k = 0; k <  data.length/96 | 0; k++) {
                 cell.push(data[k*96 + i])
             }
@@ -163,7 +167,7 @@ export default function Meeting() {
                             var day = lastSelectedDay
                             while(!checked) {
                                 if(document.getElementById(number2time(timeId) + ';' + day).classList.contains('selected')) {
-                                    document.getElementById(number2time(timeId) + ';' + day).classList.remove('selected')
+                                    document.getElementById(number2time(timeId) + ';' + day).className = "cell"
                                     timeId = timeId - 1
                                     if(timeId < 0) {
                                         day = day - 1;
@@ -184,14 +188,14 @@ export default function Meeting() {
                                 var checked = false
                                 while(!checked) {
                                     if(time2number(lastSelectedTime) !== time2number(e.target.id.split(';')[0])) {
-                                        document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.remove('selected')
+                                        document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"
                                         lastSelectedTime = number2time(time2number(lastSelectedTime) - 1)
                                     }
                                     else checked = true; 
                                 }
                             }
                             else {
-                                document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.remove('selected')                            
+                                document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"                            
                                 lastSelectedDay = e.target.id.split(';')[1];
                                 lastSelectedTime = e.target.id.split(';')[0];
                             }
@@ -203,6 +207,7 @@ export default function Meeting() {
                     if(lastSelectedDay >= e.target.id.split(';')[1]) {
                         if(lastSelectedDay == e.target.id.split(';')[1] && time2number(lastSelectedTime) == time2number(e.target.id.split(';')[0])) {
                             e.target.classList.add('selected')
+                            e.target.classList.add(getRadioChoice())
                         }
                         if(lastSelectedDay > e.target.id.split(';')[1]) {
                             return
@@ -211,12 +216,12 @@ export default function Meeting() {
                             var checked = false
                             while(!checked) {
                                 if(document.getElementById(number2time(time2number(lastSelectedTime) - 1) + ';' + lastSelectedDay).classList.contains('selected')) {
-                                    document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.remove('selected')
+                                    document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"
                                     lastSelectedTime = number2time(time2number(lastSelectedTime) - 1)
                                 }
                                 else checked = true;
                             }
-                            document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.remove('selected')
+                            document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"
                             return
                         }
 
@@ -225,6 +230,7 @@ export default function Meeting() {
                             while(!checked) {
                                 if(!(time2number(e.target.id.split(';')[0]) == time2number(lastSelectedTime))) {
                                     document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.add('selected')
+                                    document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.add(getRadioChoice())
                                     lastSelectedTime = number2time(time2number(lastSelectedTime) + 1)
                                 }
                                 else checked = true;
@@ -234,6 +240,7 @@ export default function Meeting() {
                     }
                     
                     e.target.classList.add('selected')
+                    e.target.classList.add(getRadioChoice())
                     
                     if(lastSelectedDay !== null && lastSelectedDay < e.target.id.split(';')[1]) {  //Do the check here
                         //We check the times backwards to reach the last selected time before the switch
@@ -241,7 +248,6 @@ export default function Meeting() {
                         let checked = false
                         var timeId = time2number(e.target.id.split(';')[0]) - 1
                         var day = e.target.id.split(';')[1]
-                        console.log(day)
                         if(day <= 0) day = 0
                         if(timeId < 0) {
                             day = day - 1
@@ -252,6 +258,7 @@ export default function Meeting() {
                             if(day == lastSelectedDay && timeId == time2number(lastSelectedTime)) checked = true;
                             if(!document.getElementById(number2time(timeId) + ';' + day).classList.contains('selected')) {
                                 document.getElementById(number2time(timeId) + ';' + day).classList.add('selected')
+                                document.getElementById(number2time(timeId) + ';' + day).classList.add(getRadioChoice())
                                 timeId = timeId - 1
                                 if(timeId < 0) {
                                     day = day - 1;
@@ -272,7 +279,10 @@ export default function Meeting() {
         const handleMouseDown = async e => {
             if(e.target.classList.contains('firstRow')) return;
             if(e.target.classList.contains('selected'))  {  //Check surrounding cells
-                e.target.classList.remove('selected')
+                var paint = false
+                if(!e.target.classList.contains(getRadioChoice())) paint = true
+                if(!paint)  e.target.className = "cell"
+                else e.target.className = "cell" + " selected " + getRadioChoice()
                 let currentTime = e.target.id.split(';')[0];
                 let currentDay = e.target.id.split(';')[1];
                 //Check backwards, then forwards
@@ -288,7 +298,8 @@ export default function Meeting() {
                 }
                 while(!checked) {  //Check backwards
                     if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
-                        document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.remove('selected')
+                        if(!paint)  document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell"
+                        else document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell" + " selected " + getRadioChoice()
                         if(checkingId == 0) {
                             if(checkingDay == 0) { //All the way up left
                                 checked = true
@@ -314,7 +325,8 @@ export default function Meeting() {
                 }
                 while(!checked) {  //Check forwards
                     if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
-                        document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.remove('selected')
+                        if(!paint)  document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell"
+                        else document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell" + " selected " + getRadioChoice()
                         if(checkingId == 95) {
                             if(checkingDay == maxDays) { 
                                 checked = true
@@ -333,6 +345,7 @@ export default function Meeting() {
             }
             else {
                 e.target.classList.add('selected')
+                e.target.classList.add(getRadioChoice())
                 lastSelectedDay = e.target.id.split(';')[1]
                 lastSelectedTime = e.target.id.split(';')[0]
                 mouseDown = true
@@ -369,6 +382,24 @@ export default function Meeting() {
         )
     }
 
+    const typeChanged = async value => {
+        setType(value)
+        if(value === "perfect") {
+            setPerfectChecked(true)
+            setWorksChecked(false)
+            setRatherNotChecked(false)
+        }
+        else if(value === "works") {
+            setPerfectChecked(false)
+            setWorksChecked(true)
+            setRatherNotChecked(false)
+        }
+        else {
+            setPerfectChecked(false)
+            setWorksChecked(false)
+            setRatherNotChecked(true)
+        }
+    }
 
     const save = async e => {
         //save the data here by updating it to the backend
@@ -380,8 +411,7 @@ export default function Meeting() {
     
     if(!confirmed) {
         return (
-            <div>
-            
+            <div>            
                 <label for="password">Please provide a password</label>
                 <input type="password" name="password" id="password" onChange={e => setPassword(e.target.value)}></input>
                 <button onClick={login}>Login</button>
@@ -395,6 +425,12 @@ export default function Meeting() {
             <h2>Please provide times for this meeting</h2>
             {info}
             {calendar}
+            <div id="tierSelector">
+                <h3>Select the quality of the time slot</h3>
+                <input type="radio" value="perfect" id="perfectRadio" onChange={e => typeChanged(e.target.value)} checked={perfectChecked}/> Perfect for me
+                <input type="radio" value="works" id="worksRadio" onChange={e => typeChanged(e.target.value)} checked={worksChecked}/> This would work
+                <input type="radio" value="ratherNot" id="ratherNotRadio" onChange={e => typeChanged(e.target.value)} checked={ratherNotChecked}/> I am available, but definitely prefer other options
+            </div>
             <button onClick={save}>Save</button>
             <button onClick={copyLink}>Copy Link</button>
         </div>
