@@ -25,7 +25,9 @@ router.post('/saveTimeData', (req, res) => {
                     //delete all data from the current user and then save the data again
                     var userIndex = meeting.participants.indexOf(req.body.user)
                     var userData =  meeting.timeData.filter((data) => {
-                        if(!data.split(';')[3] == userIndex)  return data  //send only the data for the provided user
+                        if(!(data.split(';')[3] == userIndex))  {       
+                            return data  //get only data not from the user
+                        }
                     })
                     meeting.timeData = []
                     userData.map(data => {meeting.timeData.push(data)})
