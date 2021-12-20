@@ -21,6 +21,7 @@ router.post('/createNewMeeting', (req, res) => {
             newMeeting.name = req.body.name;
             newMeeting.startingDate = req.body.startingDate;
             newMeeting.endingDate = req.body.endingDate;
+            newMeeting.meetingLength = req.body.meetingLength;
             newMeeting.participantAmount = req.body.participantAmount;
             newMeeting.setPassword(req.body.password);
             newMeeting.save((err, meeting) => {

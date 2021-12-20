@@ -24,7 +24,8 @@ router.post('/joinMeeting', (req, res) => {
                     participants: meeting.participants,
                     participantAmount: meeting.participantAmount,
                     startingDate: meeting.startingDate,
-                    endingDate: meeting.endingDate
+                    endingDate: meeting.endingDate,
+                    meetingLength: meeting.meetingLength
                 })
             }
         }

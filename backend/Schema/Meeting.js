@@ -5,6 +5,7 @@ const MeetingSchema = mongoose.Schema({
     participants: [String],
     participantAmount: {type: Number, required: true},
     timeData: [String],
+    meetingLength: String,
     hash: String,
     salt: String,
     name: {type: String, unique: true, required: true},
