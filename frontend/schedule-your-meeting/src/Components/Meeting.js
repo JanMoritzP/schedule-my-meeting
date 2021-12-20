@@ -13,7 +13,7 @@ export default function Meeting() {
     const [worksChecked, setWorksChecked] = useState(false);
     const [ratherNotChecked, setRatherNotChecked] = useState(false);
     const [userOptions, setUserOptions] = useState()
-    const [currentUser, setCurrentUser] = useState()
+    const [currentUser, setCurrentUser] = useState("")
     const [register, setRegister] = useState(false)
     var users = []
     const [participants, setParticipants] = useState([])
@@ -481,10 +481,40 @@ export default function Meeting() {
     }
 
     function loadUserData() {
-        //getTimeData call
+        var checked = false
+        if(currentUser === "Add new User" || currentUser === "") alert("Not allowed")
+        else if(name !== "") {
+            fetch("http://localhost:3080/getTimeData", {
+                method: "POST", 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    user: currentUser,
+                    password: localStorage.getItem('password')
+                })
+            })
+            .then(res => {
+                if(res.status == 200) checked = true
+                return res.json()
+            })
+            .then(data => {
+                if(checked) {
+                    var selectedElems = document.querySelectorAll('.selected, .perfect, .works, .ratherNot')
+                    for(let i = 0; i < selectedElems.length; i++) {
+                        console.log(selectedElems.item(i))
+                        selectedElems.item(i).classList = "cell"
+                    }
+                    data.timeData.map(data => {
+                        document.getElementById(data.split(';')[0] + ";" + data.split(';')[1]).className = "cell " + "selected " + data.split(';')[2]
+                    })
+                }
+            })
+        }
     }
 
-    const registerUser = async e => {
+    function registerUser() {
         if(currentUser === "Add new User") alert("Not allowed")
         else if(name !== "") {
             fetch("http://localhost:3080/addNewUser", {
@@ -513,9 +543,16 @@ export default function Meeting() {
         }
     }
 
+    const userKeyPressed = async e => {
+        if(e === 'Enter') {
+            if(register) register()
+            else loadUserData()
+        }
+    }
+
     function checkUser() {
-        if(register) return <button onClick={e => registerUser(e)}>Register User</button>
-        else return <button onClick={loadUserData()}>Load</button>
+        if(register) return <button onClick={e => registerUser()}>Register User</button>
+        else return <button onClick={e => loadUserData()}>Load</button>
     }
     
     if(!confirmed) {
@@ -534,7 +571,7 @@ export default function Meeting() {
             <h2>Please provide times for this meeting</h2>
             {info}
             <label for="username">Current User</label>
-            <input type="text" list="datalist" onChange={e => setCurrentUser(e.target.value)}></input>
+            <input type="text" list="datalist" onChange={e => setCurrentUser(e.target.value)} onKeyPress={e => userKeyPressed(e.key)}></input>
             <datalist id="datalist">
                 {userOptions}
             </datalist>
