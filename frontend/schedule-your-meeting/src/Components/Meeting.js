@@ -108,6 +108,13 @@ export default function Meeting() {
             <div>
             <p>Starting Date: {startingDate.toString()}</p>
             <p>Ending Date: {endingDate.toString()}</p>
+            <p>
+                Length of the meeting: {data.meetingLength} <br/>
+                Remember to select time slots long enough for the meeting to happen. 
+                You can select time slots that are not long enough, 
+                but be aware that they will not be taken into account when trying to find the perfect time for the meeting. 
+                Also keep in mind, that this website cannot account for any time you might need to prepare for the meeting or any travel time.
+            </p>
             </div>
         )
         var tableHeads = []
