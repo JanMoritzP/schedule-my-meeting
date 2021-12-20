@@ -19,7 +19,7 @@ router.post('/checkNewUser', (req, res) => {
         if(err) res.status(500).send({message: 'Error accessing the database'})
         else if(!meeting) res.status(404).send({messsage: 'There is no meeting with the id ' + req.body.meeting})
         else {
-            if(meeting.participants.size() === meeting.participantAmount) res.status(409).send({message: 'You cannot add another user, as the maxmimum amount has been reached'})
+            if(meeting.participants.length === meeting.participantAmount) res.status(409).send({message: 'You cannot add another user, as the maxmimum amount has been reached'})
             else if(meeting.participants.contains(req.body.user)) res.status(409).send({message: 'This username is not unique'})
             else return res.status(200).send({message: 'This username is allowed'})
         }
