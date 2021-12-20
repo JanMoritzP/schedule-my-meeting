@@ -30,7 +30,7 @@ router.post('/addNewUser', (req, res) => {
                 return res.status(200).send({
                     message: 'New user added',
                     users: meeting.participants,
-                    participantAmount: participantAmount
+                    participantAmount: meeting.participantAmount
                 })
             }
         }
