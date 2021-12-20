@@ -17,6 +17,7 @@ router.post('/createNewMeeting', (req, res) => {
         if(err) res.status(500).send({message: "There has been an error accessing the database"})
         else if (meeting) res.status(409).send({message: "You have to provide a unique name for a meeting"})
         else {
+            if(req.body.meetingLength.split(':')[1]%15 !== 0 || req.body.meetingLength.split(':') < 0) return res.status(409).send({message: 'The provided meeting length is invalid'})
             let newMeeting = new Meeting();
             newMeeting.name = req.body.name;
             newMeeting.startingDate = req.body.startingDate;
