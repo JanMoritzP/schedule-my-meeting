@@ -61,10 +61,17 @@ export default function CreateNewMeeting() {
     
     const [name, setName] = useState("");
     const [uniqueCheck, setUniqueCheck] = useState("X")
-    const [startingDate, setStartingDate] = useState(date.getFullYear() + "-" + pad2(date.getMonth()) + "-" + pad2(date.getDate()));
+    const [startingDate, setStartingDate] = useState(date.getFullYear() + "-" + pad2(parseInt((date.getMonth()) + 1)) + "-" + pad2(date.getDate()));
     const [endingDate, setEndingDate] = useState(getMinDate(startingDate));
     const navigate = useNavigate();
 
+    var times = []
+    
+    for(let i = 0; i < 96; i++) {
+        times.push(((i%96/4) | 0) + ":" + pad2(i%96*15 % 60))
+    }
+
+    console.log(times)
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -129,6 +136,10 @@ export default function CreateNewMeeting() {
         else return setEndingDate(getMinDate(e.target.value))
     }
 
+    const meetingLengthChanged = async e => {
+        //Check if the meetingLength string is actually good
+    }
+
     return(
         <div>
             <h2>Create a new meeting</h2>
@@ -139,10 +150,17 @@ export default function CreateNewMeeting() {
                 <input type="password" id="password" name="password"></input>
                 <label for="startingDate">Starting Date</label>
                 <input type="date" id="startingDate" name="startingDate"
-                min={date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()} value={startingDate}
+                min={date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate()} value={startingDate}
                 onChange={e => {setStartingDate(e.target.value);calcEndingDate(e)}}></input>
                 <label for="endingDate">Ending Date</label>       
                 <input type="date" id="endingDate" name="endingDate" min={getMinDate(startingDate)} value={endingDate} onChange={e => setEndingDate(e.target.value)}></input>     
+                <label for="meetingLength">Length of the meeting</label>
+                <input type="text" list="data" onChange={e => meetingLengthChanged(e.target.value)} id="meetingLength" name="meetingLength"></input>
+                <datalist id="data">
+                    {times.map(time => {
+                        return <option value={time} />
+                    })}
+                </datalist>
                 <label for="participantAmount">Amount of participants</label>
                 <input type="number" id="participantAmount" name="participantAmount"></input>           
                 <input type="submit" value="Create"></input>
