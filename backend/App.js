@@ -6,6 +6,9 @@ const mongoose = require('mongoose')
 app.use(require('./routes/checkUniqueMeeting'))
 app.use(require('./routes/createNewMeeting'))
 app.use(require('./routes/joinMeeting'))
+app.use(require('./routes/addNewUser'))
+app.use(require('./routes/checkNewUser'))
+app.use(require('./routes/getTimeData'))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
