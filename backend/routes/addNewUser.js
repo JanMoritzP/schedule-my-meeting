@@ -27,7 +27,11 @@ router.post('/addNewUser', (req, res) => {
                 meeting.save((err, meeting) => {
                     if(err) return res.status(500).send({message: 'Error accessing the database'})
                 })
-                return res.status(200).send({message: 'New user added'})
+                return res.status(200).send({
+                    message: 'New user added',
+                    users: meeting.participants,
+                    participantAmount: participantAmount
+                })
             }
         }
     })
