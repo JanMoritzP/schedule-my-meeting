@@ -12,7 +12,10 @@ export default function Meeting() {
     const [perfectChecked, setPerfectChecked] = useState(true);
     const [worksChecked, setWorksChecked] = useState(false);
     const [ratherNotChecked, setRatherNotChecked] = useState(false);
+    const [userOptions, setUserOptions] = useState()
     const [currentUser, setCurrentUser] = useState()
+    const [register, setRegister] = useState(false)
+    var users = []
     var mouseDown = false;
     var maxDays = 0;
     var lastSelectedDay = null;
@@ -44,6 +47,32 @@ export default function Meeting() {
         .then(data => putInfoInPage(data))
 
     }, [])
+
+    useEffect(() => {
+        const delayUniqueNameCheck = setTimeout(() => {
+            //Send the request here
+            if(currentUser !== "") {
+                fetch("http://localhost:3080/checkNewUser", {
+                    method: "POST", 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user: currentUser,
+                        meeting: name,
+                        password: localStorage.getItem('password')
+                    })
+                })
+                .then(res => {
+                    if(res.status === 409) setRegister(false)
+                    else setRegister(true)
+                })
+            }
+            else setRegister(true)
+            
+        }, 500) //ms
+        return () => clearTimeout(delayUniqueNameCheck)
+    }, [currentUser])
     
     const login = async e => {
         fetch("http://localhost:3080/joinMeeting", {
@@ -99,12 +128,15 @@ export default function Meeting() {
     }
 
     const putInfoInPage = data => {
-        let timeData = data.timeData;
-        let participants = data.participants;
-        let participantAmount = data.participantAmount;
-        let startingDate = new Date(data.startingDate);
-        let endingDate = new Date(data.endingDate);
-
+        users = data.participants
+        let participantAmount = data.participantAmount
+        while(participantAmount > users.length) {
+            users.push("Add new User")
+        }
+        setUserOptions(users.map(user => {return <option value={user}/>}))
+        let startingDate = new Date(data.startingDate)
+        let endingDate = new Date(data.endingDate)
+        
 
 
         setInfo(
@@ -113,10 +145,10 @@ export default function Meeting() {
             <p>Ending Date: {endingDate.toString()}</p>
             <p>
                 Length of the meeting: {data.meetingLength} <br/>
-                Remember to select time slots long enough for the meeting to happen. 
-                You can select time slots that are not long enough, 
-                but be aware that they will not be taken into account when trying to find the perfect time for the meeting. 
-                Also keep in mind, that this website cannot account for any time you might need to prepare for the meeting or any travel time.
+                Remember to select time slots long enough for the meeting to happen. <br/>
+                You can select time slots that are not long enough, <br/>
+                but be aware that they will not be taken into account when trying to find the perfect time for the meeting. <br/>
+                Also keep in mind, that this website cannot account for any time you might need to prepare for the meeting or any travel time. <br/>
             </p>
             </div>
         )
@@ -420,7 +452,43 @@ export default function Meeting() {
     }
 
     function loadUserData() {
+        //getTimeData call
+    }
 
+    const registerUser = async e => {
+        //Add new user here
+        if(currentUser === "Add new User") alert("Not allowed")
+        else if(name !== "") {
+            fetch("http://localhost:3080/addNewUser", {
+                method: "POST", 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    meeting: name,
+                    user: currentUser,
+                    password: localStorage.getItem('password')
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.users !== null) {
+                    console.log(data)
+                    let users = data.users;
+                    while(data.participantAmount > data.users.length) {
+                        users.push("Add new User")
+                    }
+                    setUserOptions(users.map(user => {return <option value={user}/>}))
+                    setRegister(false)
+                }
+            })
+
+        }
+    }
+
+    function checkUser() {
+        if(register) return <button onClick={e => registerUser(e)}>Register User</button>
+        else return <button onClick={loadUserData()}>Load</button>
     }
     
     if(!confirmed) {
@@ -439,12 +507,12 @@ export default function Meeting() {
             <h2>Please provide times for this meeting</h2>
             {info}
             <label for="username">Current User</label>
-            <input type="text" list="datalist"></input>
+            <input type="text" list="datalist" onChange={e => setCurrentUser(e.target.value)}></input>
             <datalist id="datalist">
-                {//options here
-}
+                {userOptions}
             </datalist>
-            <button onClick={loadUserData()}>Load</button>
+            {users.map(user => {return <p>{user}</p>})}
+            {checkUser()}
             {calendar}
             <div id="tierSelector">
                 <h3>Select the quality of the time slot</h3>
