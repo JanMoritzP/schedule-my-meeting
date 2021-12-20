@@ -10,7 +10,7 @@ const MeetingSchema = mongoose.Schema({
     name: {type: String, unique: true, required: true},
     startingDate: {type: String, required: true},
     endingDate: {type: String, required: true},
-    admin: {type: String, required: true},
+    admin: {type: String},
     adminHash: String,
     adminSalt: String
 })
