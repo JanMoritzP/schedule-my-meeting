@@ -3,7 +3,7 @@ const crypto = require('crypto')
 
 const MeetingSchema = mongoose.Schema({
     participants: [String],
-    participantAmount: {type: String, required: true},
+    participantAmount: {type: Number, required: true},
     timeData: [String],
     hash: String,
     salt: String,
