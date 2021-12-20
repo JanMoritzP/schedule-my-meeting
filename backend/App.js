@@ -9,6 +9,7 @@ app.use(require('./routes/joinMeeting'))
 app.use(require('./routes/addNewUser'))
 app.use(require('./routes/checkNewUser'))
 app.use(require('./routes/getTimeData'))
+app.use(require('./routes/saveTimeData'))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
