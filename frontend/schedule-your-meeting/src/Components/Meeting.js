@@ -12,6 +12,7 @@ export default function Meeting() {
     const [perfectChecked, setPerfectChecked] = useState(true);
     const [worksChecked, setWorksChecked] = useState(false);
     const [ratherNotChecked, setRatherNotChecked] = useState(false);
+    const [currentUser, setCurrentUser] = useState()
     var mouseDown = false;
     var maxDays = 0;
     var lastSelectedDay = null;
@@ -103,6 +104,8 @@ export default function Meeting() {
         let participantAmount = data.participantAmount;
         let startingDate = new Date(data.startingDate);
         let endingDate = new Date(data.endingDate);
+
+
 
         setInfo(
             <div>
@@ -415,6 +418,10 @@ export default function Meeting() {
     const copyLink = async e => {
         await navigator.clipboard.writeText("https://www.schedule-your-meeting.com/meeting/" + name)
     }
+
+    function loadUserData() {
+
+    }
     
     if(!confirmed) {
         return (
@@ -431,6 +438,13 @@ export default function Meeting() {
         <div>
             <h2>Please provide times for this meeting</h2>
             {info}
+            <label for="username">Current User</label>
+            <input type="text" list="datalist"></input>
+            <datalist id="datalist">
+                {//options here
+}
+            </datalist>
+            <button onClick={loadUserData()}>Load</button>
             {calendar}
             <div id="tierSelector">
                 <h3>Select the quality of the time slot</h3>
