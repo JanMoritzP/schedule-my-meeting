@@ -20,7 +20,6 @@ router.post('/joinMeeting', (req, res) => {
             if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The entered password is incorrect'})
             else {
                 res.status(200).send({
-                    timeData: meeting.timeData,
                     participants: meeting.participants,
                     participantAmount: meeting.participantAmount,
                     startingDate: meeting.startingDate,
