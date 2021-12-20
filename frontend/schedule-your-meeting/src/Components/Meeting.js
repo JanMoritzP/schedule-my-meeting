@@ -16,6 +16,7 @@ export default function Meeting() {
     const [currentUser, setCurrentUser] = useState()
     const [register, setRegister] = useState(false)
     var users = []
+    const [participants, setParticipants] = useState([])
     var mouseDown = false;
     var maxDays = 0;
     var lastSelectedDay = null;
@@ -129,6 +130,7 @@ export default function Meeting() {
 
     const putInfoInPage = data => {
         users = data.participants
+        setParticipants(data.participants)
         let participantAmount = data.participantAmount
         while(participantAmount > users.length) {
             users.push("Add new User")
@@ -444,7 +446,34 @@ export default function Meeting() {
     }
 
     const save = async e => {
-        //save the data here by updating it to the backend
+        //timeData structure: {time};{dateIndex};{priority};{userIndex}
+        //Iterate over all timeSlots and add the ones that are selected to an array and send that one to the backend
+        var collection = document.getElementsByClassName('selected')
+        var selectedElems = []
+        for(let i = 0; i < collection.length; i++) {
+            selectedElems.push(collection.item(i))
+        }
+        var data = []
+        selectedElems.map(elem => {
+            data.push(elem.id.split(';')[0] + ";" + elem.id.split(';')[1] + ";" + elem.classList[2] + ";" + participants.indexOf(currentUser))
+        })
+        fetch("http://localhost:3080/saveTimeData", {
+                method: "POST", 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    user: currentUser,
+                    password: localStorage.getItem('password'),
+                    data: data
+                })
+            })
+            .then(res => {
+                if(res.status === 200) alert("Nice")
+            })
+            
+        
     }
 
     const copyLink = async e => {
@@ -456,7 +485,6 @@ export default function Meeting() {
     }
 
     const registerUser = async e => {
-        //Add new user here
         if(currentUser === "Add new User") alert("Not allowed")
         else if(name !== "") {
             fetch("http://localhost:3080/addNewUser", {
@@ -473,7 +501,6 @@ export default function Meeting() {
             .then(res => res.json())
             .then(data => {
                 if(data.users !== null) {
-                    console.log(data)
                     let users = data.users;
                     while(data.participantAmount > data.users.length) {
                         users.push("Add new User")
