@@ -29,11 +29,11 @@ const pad2 = string => {
     else return string
 }
 
-function timeSlot(time, date, priority, user) {
+function timeSlot(time, date, priority) {
     this.time = time
     this.date = date
     this.priority = priority
-    this.user.push(user)
+    this.users = 1
 }
 
 const Meeting = require('./../Schema/Meeting')
@@ -51,12 +51,12 @@ router.post('/getBestTime', (req, res) => {
                 var data = []
                 var timeData = meeting.timeData
                 var time
-                var dateIndex
+                var date
                 var priority
                 var userIndex
                 for(let i = 0; i < meeting.timeData.length; i++) {
                     time = timeData[i].split(';')[0]
-                    dateIndex = timeData[i].split(';')[1]
+                    date = timeData[i].split(';')[1]
                     priority = timeData[i].split(';')[2]
                     userIndex = timeData[i].split(';')[3]
                     if(i === 0) {
@@ -64,21 +64,47 @@ router.post('/getBestTime', (req, res) => {
                     }   
                     else {
                         let idx = data.findIndex((element) => {
-                            return element.time === time && element.data === date
+                            return element.time === time && element.date === date
                         })
                         if(idx === -1) {
                             data.push(new timeSlot(time, date, priority, userIndex))
                         }
                         else {
-                            data[idx].user.push(userIndex)
+                            data[idx].users = data[idx].users + 1
                         }
                     }
                 }
-                //Vector now filled. Now it needs to be filtered
-                var bestMeetings = data.filter((element) => {
-                    return element.user.length === meeting.participantAmount
+                //Vector now filled. Now it needs to be filtered by checking if everyone is available and for the length of the time slot                
+                var allAvailable = data.filter((element) => {
+                    return element.users === meeting.participantAmount
                 })
 
+                //Check for length
+                var bestMeetings = []
+                if(time2number(meeting.meetingLength) !== 1) {
+                    for(let i = 0; i < allAvailable.length; i++) {
+                        //Look ahead meetingLength and if true, take everything until it breaks, if not, go to the failing index - 1 [because if incrementation] and look from there
+                        //How to check: Make times to numbers and check if number is exactly one bigger and if the date is still the same
+                        var checked = true
+                        for(let k = 0; k < time2number(meeting.meetingLength) - 1 && i + k < allAvailable.length - 1; k++) {
+                            if(!((time2number(allAvailable[i + k].time) === (time2number(allAvailable[i + k + 1].time) - 1))  //Check if time is correct and the date is the same
+                            && (allAvailable[i + k].date === allAvailable[i + k + 1].date))) {
+                                checked = false
+                                i = i + k
+                                break
+                            }
+                        }
+                        if(i === allAvailable.length - 1) break
+                        if(checked) { //Add stuff and look ahead
+                            bestMeetings.push(allAvailable[i])
+                            while(i < allAvailable.length - 1 && (time2number(allAvailable[i].time) === (time2number(allAvailable[i + 1].time) - 1)) && (allAvailable[i].date === allAvailable[i + 1].date)) {
+                                bestMeetings.push(allAvailable[i + 1])
+                                i = i + 1
+                            }
+                        }
+                    }
+                }
+                else bestMeetings = allAvailable
                 res.status(200).send({
                     data: bestMeetings
                 })                
