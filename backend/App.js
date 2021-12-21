@@ -10,6 +10,7 @@ app.use(require('./routes/addNewUser'))
 app.use(require('./routes/checkNewUser'))
 app.use(require('./routes/getTimeData'))
 app.use(require('./routes/saveTimeData'))
+app.use(require('./routes/getBestTime'))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
