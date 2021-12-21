@@ -19,8 +19,7 @@ router.post('/saveTimeData', (req, res) => {
         else {
             if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The provided password is incorrect'})
             else {
-                if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The entered password is incorrect'})
-                else if(!meeting.participants.includes(req.body.user)) res.status(409).send({message: 'This user is not in the included meeting'})
+                if(!meeting.participants.includes(req.body.user)) res.status(409).send({message: 'This user is not in the included meeting'})
                 else {
                     //delete all data from the current user and then save the data again
                     var userIndex = meeting.participants.indexOf(req.body.user)

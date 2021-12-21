@@ -19,8 +19,7 @@ router.post('/getTimeData', (req, res) => {
         else {
             if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The provided password is incorrect'})
             else {
-                if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The entered password is incorrect'})
-                else if(!meeting.participants.includes(req.body.user)) res.status(409).send({message: 'This user is not included in the meeting'})
+                if(!meeting.participants.includes(req.body.user)) res.status(409).send({message: 'This user is not included in the meeting'})
                 else {
                     var userIndex = meeting.participants.indexOf(req.body.user)
                     var userData =  meeting.timeData.filter((data) => {
