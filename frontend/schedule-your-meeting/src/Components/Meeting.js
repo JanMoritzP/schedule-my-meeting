@@ -15,6 +15,7 @@ export default function Meeting() {
     const [userOptions, setUserOptions] = useState()
     const [currentUser, setCurrentUser] = useState("")
     const [register, setRegister] = useState(false)
+    const [result, setResult] = useState(false)
     var users = []
     const [participants, setParticipants] = useState([])
     var mouseDown = false;
@@ -155,7 +156,7 @@ export default function Meeting() {
             </div>
         )
         var tableHeads = []
-        var dates =[]
+        var dates = []
         const dateDifference = (endingDate - startingDate)/(1000*3600*24) + 1 //This gives days after the division
         maxDays = dateDifference
         for (let i = 0; i < dateDifference; i++) {
@@ -554,6 +555,26 @@ export default function Meeting() {
         if(register) return <button onClick={e => registerUser()}>Register User</button>
         else return <button onClick={e => loadUserData()}>Load</button>
     }
+
+    function generateMeeting() {
+        fetch("http://localhost:3080/getBestTime", {
+                method: "POST", 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    password: localStorage.getItem('password')
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.users !== null) {
+                    console.log(data)
+                    setResult(true)
+                }
+            })
+    }
     
     if(!confirmed) {
         return (
@@ -565,28 +586,35 @@ export default function Meeting() {
         )
     }
 
-
-    return(
+    if(result) {
         <div>
-            <h2>Please provide times for this meeting</h2>
-            {info}
-            <label for="username">Current User</label>
-            <input type="text" list="datalist" onChange={e => setCurrentUser(e.target.value)} onKeyPress={e => userKeyPressed(e.key)}></input>
-            <datalist id="datalist">
-                {userOptions}
-            </datalist>
-            {users.map(user => {return <p>{user}</p>})}
-            {checkUser()}
-            {calendar}
-            <div id="tierSelector">
-                <h3>Select the quality of the time slot</h3>
-                <input type="radio" value="perfect" id="perfectRadio" onChange={e => typeChanged(e.target.value)} checked={perfectChecked}/> Perfect for me
-                <input type="radio" value="works" id="worksRadio" onChange={e => typeChanged(e.target.value)} checked={worksChecked}/> This would work
-                <input type="radio" value="ratherNot" id="ratherNotRadio" onChange={e => typeChanged(e.target.value)} checked={ratherNotChecked}/> I am available, but definitely prefer other options
-            </div>
-            <button onClick={save}>Save</button>
-            <button onClick={copyLink}>Copy Link</button>
+            <p>Results have been found. Please check them in the console</p>
+            <button onClick={setResult(false)}>Take me back</button>
         </div>
-    )
-
+    }
+    else {
+        return(
+            <div>
+                <h2>Please provide times for this meeting</h2>
+                {info}
+                <label for="username">Current User</label>
+                <input type="text" list="datalist" onChange={e => setCurrentUser(e.target.value)} onKeyPress={e => userKeyPressed(e.key)}></input>
+                <datalist id="datalist">
+                    {userOptions}
+                </datalist>
+                {users.map(user => {return <p>{user}</p>})}
+                {checkUser()}
+                {calendar}
+                <div id="tierSelector">
+                    <h3>Select the quality of the time slot</h3>
+                    <input type="radio" value="perfect" id="perfectRadio" onChange={e => typeChanged(e.target.value)} checked={perfectChecked}/> Perfect for me
+                    <input type="radio" value="works" id="worksRadio" onChange={e => typeChanged(e.target.value)} checked={worksChecked}/> This would work
+                    <input type="radio" value="ratherNot" id="ratherNotRadio" onChange={e => typeChanged(e.target.value)} checked={ratherNotChecked}/> I am available, but definitely prefer other options
+                </div>
+                <button onClick={save}>Save</button>
+                <button onClick={copyLink}>Copy Link</button>
+                <button onClick={generateMeeting}>Generate Best Meeting(s)</button>
+            </div>
+        )
+    }
 }
