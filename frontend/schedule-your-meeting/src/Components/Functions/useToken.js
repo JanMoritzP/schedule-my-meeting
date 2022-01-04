@@ -20,7 +20,7 @@ export default function useToken() {
   };
 
   async function checkTokenValidity(userToken) {
-    const data = await fetch('http://localhost:3080/token', {
+    const data = await fetch('www.schedule-your-meeting.com/data/token', {
         method: "POST",
         body: {token: userToken}
     }).then(res => res.json)
