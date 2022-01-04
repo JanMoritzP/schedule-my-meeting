@@ -12,7 +12,7 @@ router.use((req, res, next) => {
 const Meeting = require('./../Schema/Meeting')
 mongoose.connect('mongodb://localhost:27017/scheduleMeeting', {useNewUrlParser:true, useUnifiedTopology:true})
 
-router.post('/getTimeData', (req, res) => {
+router.post('data//getTimeData', (req, res) => {
     Meeting.findOne({name: req.body.name}, (err, meeting) => {
         if(err) res.status(500).send({message: 'Error accessing the database'})
         else if(!meeting) res.status(409).send({message: `There is no meeting named ${req.body.name}`})
