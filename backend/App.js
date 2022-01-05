@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const http = require('http').Server(app)
-const mongoose = require('mongoose')
 
 app.use(require('./routes/checkUniqueMeeting'))
 app.use(require('./routes/createNewMeeting'))
