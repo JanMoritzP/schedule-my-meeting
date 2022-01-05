@@ -74,7 +74,7 @@ export default function CreateNewMeeting() {
     const handleSubmit = async e => {
         e.preventDefault()
         if(name !== "") {
-            fetch("www.schedule-your-meeting.com/data/createNewMeeting", {
+            fetch("http://localhost:3080/data/createNewMeeting", {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
@@ -103,7 +103,7 @@ export default function CreateNewMeeting() {
         const delayUniqueNameCheck = setTimeout(() => {
             //Send the request here
             if(name !== "") {
-                fetch("www.schedule-your-meeting.com/data/checkUniqueMeeting", {
+                fetch("http://localhost:3080/data/checkUniqueMeeting", {
                     method: "POST", 
                     headers: {
                         'Content-Type': 'application/json'
