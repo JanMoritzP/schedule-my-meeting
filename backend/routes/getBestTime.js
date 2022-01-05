@@ -29,6 +29,13 @@ const pad2 = string => {
     else return string
 }
 
+const prio2number = prio => {
+    if(prio === "perfect") return 2
+    if(prio === "works") return 1
+    if(prio === "ratherNot") return 0
+    console.log("Bad prio, please check" + prio)
+}
+
 function timeSlot(time, date, priority) {
     this.time = time
     this.date = date
@@ -39,7 +46,7 @@ function timeSlot(time, date, priority) {
 const Meeting = require('./../Schema/Meeting')
 mongoose.connect('mongodb://localhost:27017/scheduleMeeting', {useNewUrlParser:true, useUnifiedTopology:true})
 
-router.post('data//getBestTime', (req, res) => {
+router.post('/data/getBestTime', (req, res) => {
     Meeting.findOne({name: req.body.name}, (err, meeting) => {
         if(err) res.status(500).send({message: 'Error accessing the database'})
         else if(!meeting) res.status(409).send({message: `There is no meeting named ${req.body.name}`})
@@ -53,24 +60,23 @@ router.post('data//getBestTime', (req, res) => {
                 var time
                 var date
                 var priority
-                var userIndex
-                for(let i = 0; i < meeting.timeData.length; i++) {
+                for(let i = 0; i < timeData.length; i++) {
                     time = timeData[i].split(';')[0]
                     date = timeData[i].split(';')[1]
-                    priority = timeData[i].split(';')[2]
-                    userIndex = timeData[i].split(';')[3]
+                    priority = prio2number(timeData[i].split(';')[2])
                     if(i === 0) {
-                        data.push(new timeSlot(time, date, priority, userIndex))
+                        data.push(new timeSlot(time, date, priority))
                     }   
                     else {
                         let idx = data.findIndex((element) => {
                             return element.time === time && element.date === date
                         })
                         if(idx === -1) {
-                            data.push(new timeSlot(time, date, priority, userIndex))
+                            data.push(new timeSlot(time, date, priority))
                         }
                         else {
                             data[idx].users = data[idx].users + 1
+                            data[idx].priority = data[idx].priority + priority
                         }
                     }
                 }
@@ -107,7 +113,7 @@ router.post('data//getBestTime', (req, res) => {
                 else bestMeetings = allAvailable
                 res.status(200).send({
                     data: bestMeetings
-                })                
+                })               //fetch("www.schedule-your-meeting.com/data 
             }
         }
     })
