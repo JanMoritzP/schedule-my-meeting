@@ -51,6 +51,12 @@ table {
 }
 
 h1 {
-    background-color:rgb(255, 184, 158);
-    border-color:rgb(255, 184, 158);
+    position: absolute;
+    color: rgb(223, 223, 223);
+    background-color:#136290;
+    top: 0;
+    left: calc(50% - 11rem);
+    width: 21rem;
+    padding: 1rem;
+    text-align: center;
 }
