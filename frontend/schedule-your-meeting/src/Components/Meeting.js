@@ -26,7 +26,7 @@ export default function Meeting() {
     
     useEffect(() => {
         if(!localStorage.getItem('password')) return
-        fetch("www.schedule-your-meeting.com/data/joinMeeting", {
+        fetch("http://localhost:3080/data/joinMeeting", {
             method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
@@ -37,16 +37,21 @@ export default function Meeting() {
             })
         })
         .then(res => {
-            if(res.status === 200) setConfirmed(true);
+            if(res.status === 200) {
+                setConfirmed(true);
+                return res.json()
+            }
             else {
                 if(res.status === 409) {
                     navigate('/')
                 }
                 setConfirmed(false)
+                return false
             }
-            return res.json()
         })
-        .then(data => putInfoInPage(data))
+        .then(data => {
+            if(data) putInfoInPage(data)
+        })
 
     }, [])
 
@@ -54,7 +59,7 @@ export default function Meeting() {
         const delayUniqueNameCheck = setTimeout(() => {
             //Send the request here
             if(currentUser !== "") {
-                fetch("www.schedule-your-meeting.com/data/checkNewUser", {
+                fetch("http://localhost:3080/data/checkNewUser", {
                     method: "POST", 
                     headers: {
                         'Content-Type': 'application/json'
@@ -77,7 +82,7 @@ export default function Meeting() {
     }, [currentUser])
     
     const login = async e => {
-        fetch("www.schedule-your-meeting.com/data/joinMeeting", {
+        fetch("http://localhost:3080/data/joinMeeting", {
             method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
@@ -458,7 +463,7 @@ export default function Meeting() {
         selectedElems.map(elem => {
             data.push(elem.id.split(';')[0] + ";" + elem.id.split(';')[1] + ";" + elem.classList[2] + ";" + participants.indexOf(currentUser))
         })
-        fetch("www.schedule-your-meeting.com/data/saveTimeData", {
+        fetch("http://localhost:3080/data/saveTimeData", {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
@@ -485,7 +490,7 @@ export default function Meeting() {
         var checked = false
         if(currentUser === "Add new User" || currentUser === "") alert("Not allowed")
         else if(name !== "") {
-            fetch("www.schedule-your-meeting.com/data/getTimeData", {
+            fetch("http://localhost:3080/data/getTimeData", {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
@@ -504,7 +509,6 @@ export default function Meeting() {
                 if(checked) {
                     var selectedElems = document.querySelectorAll('.selected, .perfect, .works, .ratherNot')
                     for(let i = 0; i < selectedElems.length; i++) {
-                        console.log(selectedElems.item(i))
                         selectedElems.item(i).classList = "cell"
                     }
                     data.timeData.map(data => {
@@ -518,7 +522,7 @@ export default function Meeting() {
     function registerUser() {
         if(currentUser === "Add new User") alert("Not allowed")
         else if(name !== "") {
-            fetch("www.schedule-your-meeting.com/data/addNewUser", {
+            fetch("http://localhost:3080/data/addNewUser", {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
@@ -557,7 +561,7 @@ export default function Meeting() {
     }
 
     function generateMeeting() {
-        fetch("www.schedule-your-meeting.com/data/getBestTime", {
+        fetch("http://localhost:3080/data/getBestTime", {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
@@ -574,6 +578,11 @@ export default function Meeting() {
                     setResult(true)
                 }
             })
+    }
+
+    const userChange = async e => {
+        if(e !== "") setCurrentUser(e.target.value)
+        //Clear page with else
     }
     
     if(!confirmed) {
@@ -598,7 +607,7 @@ export default function Meeting() {
                 <h2>Please provide times for this meeting</h2>
                 {info}
                 <label for="username">Current User</label>
-                <input type="text" list="datalist" onChange={e => setCurrentUser(e.target.value)} onKeyPress={e => userKeyPressed(e.key)}></input>
+                <input type="text" list="datalist" onChange={e => userChange(e)} onKeyPress={e => userKeyPressed(e.key)}></input>
                 <datalist id="datalist">
                     {userOptions}
                 </datalist>
