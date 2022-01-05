@@ -483,7 +483,7 @@ export default function Meeting() {
     }
 
     const copyLink = async e => {
-        await navigator.clipboard.writeText("https://www.schedule-your-meeting.com/meeting/" + name)
+        await navigator.clipboard.writeText("https://www.schedule-my-meeting.com/meeting/" + name)
     }
 
     function loadUserData() {

@@ -113,7 +113,7 @@ router.post('/data/getBestTime', (req, res) => {
                 else bestMeetings = allAvailable
                 res.status(200).send({
                     data: bestMeetings
-                })               //fetch("www.schedule-your-meeting.com/data 
+                })               //fetch("www.schedule-my-meeting.com/data 
             }
         }
     })
