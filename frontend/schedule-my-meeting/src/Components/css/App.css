@@ -3,6 +3,10 @@
     --textBgColor: rgb(216, 216, 216);
     --textColor: black;
     --mainBgColor: silver;
+    --selected: lightblue;
+    --perfect: chartreuse;
+    --works: rgb(93, 187, 187);
+    --ratherNot: rgb(214, 88, 88);
 }
 
 body {

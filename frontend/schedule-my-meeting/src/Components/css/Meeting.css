@@ -6,6 +6,14 @@
     -webkit-user-select: none;
     -o-user-select: none;
 }
+#tierSelector {
+    position: absolute;
+    inset: 20% auto auto 2rem;
+    display: grid;
+    grid-auto-flow: row;
+    padding: 2rem 2rem 2.5rem 2rem;
+    box-shadow: 0 0 10px 10px var(--mainBgColor) inset;
+}
 .selected {
     background-color: lightblue;
 }
@@ -18,19 +26,20 @@
 .ratherNot {
     background-color: rgb(214, 88, 88);
 }
-#tierSelector {
-    position: absolute;
-    right: 5%;
-    top: 30%;
-    display: flex;
-    flex-direction: column;
-    padding: 1em;
-    border: 1em solid;
-    border-color:rgb(255, 184, 158);
-    border-radius: 5%;
-    border-width: 5px;
-    box-shadow: 2px 2px 2px black;
+
+
+#tierSelector input {
+    font: inherit;
+    width: 1.15rem;
+    height: 1.15rem;
+    border: 0.15rem solid black;
+    border-radius: 50%;
+    margin-top: 1rem;
+    transform: translateY(1rem);
+    display: grid;
+    place-content: center;
 }
+
 td {
     user-select: none;
     padding: 0.2em;
@@ -50,3 +59,7 @@ table {
     overflow: scroll;
 }
 
+#meetingContainer {
+    position: absolute;
+    inset: 20% 4rem auto auto;
+}

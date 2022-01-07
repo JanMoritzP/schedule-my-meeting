@@ -584,6 +584,25 @@ export default function Meeting() {
         if(e !== "") setCurrentUser(e.target.value)
         //Clear page with else
     }
+
+    const radioChange = async choice => {
+        if(choice === "perfect") {
+            document.getElementById("tierSelector").classList.add('perfect')
+            document.getElementById("tierSelector").classList.remove('works')
+            document.getElementById("tierSelector").classList.remove('ratherNot')
+        }
+        else if(choice === "works") {
+            document.getElementById("tierSelector").classList.remove('perfect')
+            document.getElementById("tierSelector").classList.add('works')
+            document.getElementById("tierSelector").classList.remove('ratherNot')            
+        }
+        else if(choice === "ratherNot") {
+            document.getElementById("tierSelector").classList.remove('perfect')
+            document.getElementById("tierSelector").classList.remove('works')
+            document.getElementById("tierSelector").classList.add('ratherNot')            
+        }
+        typeChanged(choice)
+    }
     
     if(!confirmed) {
         return (
@@ -604,25 +623,27 @@ export default function Meeting() {
     else {
         return(
             <div>
-                <h2>Please provide times for this meeting</h2>
-                {info}
-                <label for="username">Current User</label>
-                <input type="text" list="datalist" onChange={e => userChange(e)} onKeyPress={e => userKeyPressed(e.key)}></input>
-                <datalist id="datalist">
-                    {userOptions}
-                </datalist>
-                {users.map(user => {return <p>{user}</p>})}
-                {checkUser()}
-                {calendar}
+                <div id='meetingContainer'>
+                    <h2 id='meetingHeader'>Please provide times for this meeting</h2>
+                    {info}
+                    <label for="username">Current User</label>
+                    <input type="text" list="datalist" onChange={e => userChange(e)} onKeyPress={e => userKeyPressed(e.key)}></input>
+                    <datalist id="datalist">
+                        {userOptions}
+                    </datalist>
+                    {users.map(user => {return <p>{user}</p>})}
+                    {checkUser()}
+                    {calendar}                    
+                    <button onClick={save}>Save</button>
+                    <button onClick={copyLink}>Copy Link</button>
+                    <button onClick={generateMeeting}>Generate Best Meeting(s)</button>
+                </div>
                 <div id="tierSelector">
                     <h3>Select the quality of the time slot</h3>
-                    <input type="radio" value="perfect" id="perfectRadio" onChange={e => typeChanged(e.target.value)} checked={perfectChecked}/> Perfect for me
-                    <input type="radio" value="works" id="worksRadio" onChange={e => typeChanged(e.target.value)} checked={worksChecked}/> This would work
-                    <input type="radio" value="ratherNot" id="ratherNotRadio" onChange={e => typeChanged(e.target.value)} checked={ratherNotChecked}/> I am available, but definitely prefer other options
+                    <input type="radio" value="perfect" id="perfectRadio" onChange={e => radioChange(e.target.value)} checked={perfectChecked}/> Perfect for me
+                    <input type="radio" value="works" id="worksRadio" onChange={e => radioChange(e.target.value)} checked={worksChecked}/> This would work
+                    <input type="radio" value="ratherNot" id="ratherNotRadio" onChange={e => radioChange(e.target.value)} checked={ratherNotChecked}/> Rather not
                 </div>
-                <button onClick={save}>Save</button>
-                <button onClick={copyLink}>Copy Link</button>
-                <button onClick={generateMeeting}>Generate Best Meeting(s)</button>
             </div>
         )
     }
