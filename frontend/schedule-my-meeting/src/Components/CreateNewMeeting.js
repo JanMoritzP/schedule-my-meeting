@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
+import './css/CreateNewMeeting.css'
 
 export default function CreateNewMeeting() {
 
@@ -139,27 +140,27 @@ export default function CreateNewMeeting() {
     }
 
     return(
-        <div>
+        <div id='CreateMeeting'>
             <h2>Create a new meeting</h2>
             <form onSubmit={handleSubmit}>
-                <label for="name">Name of the meeting {uniqueCheck}</label>
+                <label for="name" id='labelName'>Name of the meeting {uniqueCheck}</label>
                 <input type="text" id="name" name="name" onChange={e => setName(e.target.value)}></input>
-                <label for="password">Password of the meeting</label>
+                <label for="password" id='labelPassword'>Password of the meeting</label>
                 <input type="password" id="password" name="password"></input>
-                <label for="startingDate">Starting Date</label>
+                <label for="startingDate" id='labelStartingDate'>Starting Date</label>
                 <input type="date" id="startingDate" name="startingDate"
                 min={date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate()} value={startingDate}
                 onChange={e => {setStartingDate(e.target.value);calcEndingDate(e)}}></input>
-                <label for="endingDate">Ending Date</label>       
+                <label for="endingDate" id='labelEndingDate'>Ending Date</label>       
                 <input type="date" id="endingDate" name="endingDate" min={getMinDate(startingDate)} value={endingDate} onChange={e => setEndingDate(e.target.value)}></input>     
-                <label for="meetingLength">Length of the meeting</label>
+                <label for="meetingLength" id='labelMeetingLength'>Length of the meeting</label>
                 <input type="text" list="data" onChange={e => meetingLengthChanged(e.target.value)} id="meetingLength" name="meetingLength"></input>
                 <datalist id="data">
                     {times.map(time => {
                         return <option value={time} />
                     })}
                 </datalist>
-                <label for="participantAmount">Amount of participants</label>
+                <label for="participantAmount" id='labelParticipantAmount'>Amount of participants</label>
                 <input type="number" id="participantAmount" name="participantAmount"></input>           
                 <input type="submit" value="Create"></input>
             </form>
