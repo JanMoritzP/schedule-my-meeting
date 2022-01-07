@@ -1,5 +1,37 @@
 #CreateMeeting {
     position: absolute;
-    inset: 20% auto auto auto;
+    inset: 20% 40% auto auto;
+    padding: 2rem;
+    display: grid;
+    grid-auto-flow: row;
 }
+
+#submitButton {
+    background-color: var(--borderColor);
+    color: var(--mainBgColor);
+    padding: 1rem 2rem 1rem 2rem;
+    margin-top: 1rem;
+    margin-left: 7rem;
+}
+
+#meetingHeader {
+    justify-self: center;
+}
+
+label {
+    justify-self: start;
+}
+
+input {
+    width: 15rem;
+    justify-self: end;
+    margin-left: 0.6rem;
+}
+
+form div {
+    display: grid;
+    grid-auto-flow: column;
+    padding: 0.5rem;    
+}
+
 

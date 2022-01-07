@@ -64,11 +64,13 @@ export default function CreateNewMeeting() {
     const [uniqueCheck, setUniqueCheck] = useState("X")
     const [startingDate, setStartingDate] = useState(date.getFullYear() + "-" + pad2(parseInt((date.getMonth()) + 1)) + "-" + pad2(date.getDate()));
     const [endingDate, setEndingDate] = useState(getMinDate(startingDate));
+    const [meetingLength, setMeetingLength] = useState('0:15');
+    const [error, setError] = useState('')
     const navigate = useNavigate();
 
     var times = []
     
-    for(let i = 0; i < 96; i++) {
+    for(let i = 1; i < 96; i++) {
         times.push(((i%96/4) | 0) + ":" + pad2(i%96*15 % 60))
     }
 
@@ -85,7 +87,8 @@ export default function CreateNewMeeting() {
                     password: e.target.password.value,
                     startingDate: startingDate,
                     endingDate: endingDate,
-                    participantAmount: e.target.participantAmount.value
+                    participantAmount: e.target.participantAmount.value,
+                    meetingLength: meetingLength
                 })
             })
             .then(res => {
@@ -136,33 +139,56 @@ export default function CreateNewMeeting() {
     }
 
     const meetingLengthChanged = async e => {
+        if(e.length > 4 || e.length < 3)  setError('This meeting length is not permitted')
+        else {
+            if(e.split(':').length !== 2) setError('This meeting length is not permitted')
+            else if (e.split(':')[0] < 0 || e.split(':')[0] > 23) setError('This meeting length is not permitted')
+            else if (e.split(':')[1] % 15 !== 0) setError('This meeting length is not permitted')
+            else {
+                setMeetingLength(e)
+                setError('')
+            }
+        }
         //Check if the meetingLength string is actually good
     }
 
     return(
         <div id='CreateMeeting'>
-            <h2>Create a new meeting</h2>
+            <h2 id='meetingHeader'>Create a new meeting</h2>
             <form onSubmit={handleSubmit}>
-                <label for="name" id='labelName'>Name of the meeting {uniqueCheck}</label>
-                <input type="text" id="name" name="name" onChange={e => setName(e.target.value)}></input>
-                <label for="password" id='labelPassword'>Password of the meeting</label>
-                <input type="password" id="password" name="password"></input>
-                <label for="startingDate" id='labelStartingDate'>Starting Date</label>
-                <input type="date" id="startingDate" name="startingDate"
-                min={date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate()} value={startingDate}
-                onChange={e => {setStartingDate(e.target.value);calcEndingDate(e)}}></input>
-                <label for="endingDate" id='labelEndingDate'>Ending Date</label>       
-                <input type="date" id="endingDate" name="endingDate" min={getMinDate(startingDate)} value={endingDate} onChange={e => setEndingDate(e.target.value)}></input>     
-                <label for="meetingLength" id='labelMeetingLength'>Length of the meeting</label>
-                <input type="text" list="data" onChange={e => meetingLengthChanged(e.target.value)} id="meetingLength" name="meetingLength"></input>
-                <datalist id="data">
-                    {times.map(time => {
-                        return <option value={time} />
-                    })}
-                </datalist>
-                <label for="participantAmount" id='labelParticipantAmount'>Amount of participants</label>
-                <input type="number" id="participantAmount" name="participantAmount"></input>           
-                <input type="submit" value="Create"></input>
+                <div id='nameDiv'>
+                    <label for="name" id='labelName'>Name of the meeting {uniqueCheck}</label>
+                    <input type="text" id="name" name="name" onChange={e => setName(e.target.value)}></input>
+                </div>
+                <div id='passwordDiv'>
+                    <label for="password" id='labelPassword'>Password of the meeting</label>
+                    <input type="password" id="password" name="password"></input>
+                </div>
+                <div id='startingDiv'>
+                    <label for="startingDate" id='labelStartingDate'>Starting Date</label>
+                    <input type="date" id="startingDate" name="startingDate"
+                    min={date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate()} value={startingDate}
+                    onChange={e => {setStartingDate(e.target.value);calcEndingDate(e)}}></input>
+                </div>
+                <div id='endingDiv'>
+                    <label for="endingDate" id='labelEndingDate'>Ending Date</label>       
+                    <input type="date" id="endingDate" name="endingDate" min={getMinDate(startingDate)} value={endingDate} onChange={e => setEndingDate(e.target.value)}></input>     
+                </div>
+                <div id='lengthDiv'>
+                    <label for="meetingLength" id='labelMeetingLength'>Length of the meeting</label>
+                    <input type="text" list="data" onChange={e => meetingLengthChanged(e.target.value)} id="meetingLength" name="meetingLength"></input>
+                    <datalist id="data">
+                        {times.map(time => {
+                            return <option value={time} />
+                        })}
+                    </datalist>
+                </div>
+                <div id='participantDiv'>
+                    <label for="participantAmount" id='labelParticipantAmount'>Amount of participants</label>
+                    <input type="number" id="participantAmount" name="participantAmount"></input>           
+                </div>
+                <input type="submit" value="Create" id='submitButton'></input>
+                <p>{error}</p>
             </form>
         </div>
     )
