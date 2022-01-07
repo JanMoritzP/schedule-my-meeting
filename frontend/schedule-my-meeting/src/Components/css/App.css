@@ -1,3 +1,10 @@
+:root {
+    --borderColor: #1270af;
+    --textBgColor: rgb(216, 216, 216);
+    --textColor: black;
+    --mainBgColor: silver;
+}
+
 body {
-    background-color: #7FC8F8;
+    background-color: var(--mainBgColor);
 }

@@ -1,19 +1,24 @@
-#infoHeader {
-    background-color: orange;
+#mainHeader {
     position: absolute;
-    left: 30%;
-    top: 13%;
-    font-size: 25pt;
+    color: black;
+    background-color: silver;
+    background-image: linear-gradient(var(--mainBgColor) 45%, var(--borderColor) 50%, var(--mainBgColor) 90%);
+    inset: 0 0 auto 0;
+    height: 7rem;
+    margin: 0;
+    padding: 2rem;
+    text-align: center;
 }
 
 #infoParagraph {
+    color: var(--textColor);
     position: absolute;
-    background-color: red;
-    height: 20%;
+    background-color: var(--textBgColor);
+    height: 30%;
     width: 50%;
     font-size: 15pt;
-    top: 20%;
-    left: 0;
+    inset: 20% 20% auto auto;
     padding: 2rem;
     margin: 2rem;
+    box-shadow: 0px 0px 10px 15px var(--mainBgColor) inset;
 }
