@@ -197,215 +197,6 @@ export default function Meeting() {
             bodyData.push(cell)
         }
 
-        const handleEnter = async e => {
-            if(e.target.classList.contains('firstRow')) return;
-            if(mouseDown) {
-                if(e.target.classList.contains('selected'))  { //Deselect
-                    if(e.target.id.split(';')[1] >= lastSelectedDay) {
-                        if(time2number(e.target.id.split(';')[0]) >= time2number(lastSelectedTime)) {
-                            return
-                        }
-                        if(e.target.id.split(';')[1] > lastSelectedDay) {  //Join time slots
-                            
-                        }
-                    }
-                    if(parseInt(e.target.id.split(';')[1]) <= parseInt(lastSelectedDay)) {
-                        //Check for day crossing and kill everything from last selected time to current time but do not kill current time
-                        if(lastSelectedDay !== null && lastSelectedDay > e.target.id.split(';')[1]) {
-                            let checked = false
-                            var timeId = time2number(lastSelectedTime)
-                            var day = lastSelectedDay
-                            while(!checked) {
-                                if(document.getElementById(number2time(timeId) + ';' + day).classList.contains('selected')) {
-                                    document.getElementById(number2time(timeId) + ';' + day).className = "cell"
-                                    timeId = timeId - 1
-                                    if(timeId < 0) {
-                                        day = day - 1;
-                                        timeId = 95  //95 because you check backwards
-                                    }
-                                    if(timeId == time2number(e.target.id.split(';')[0]) && day == e.target.id.split(';')[1])  checked = true
-                                }
-                                else {
-                                    checked = true
-                                }
-                            }
-                            lastSelectedDay = e.target.id.split(';')[1];
-                            lastSelectedTime = e.target.id.split(';')[0];
-                        }
-                        //Just kill the last one and set yourself to the last selected one
-                        else if(lastSelectedTime !== null) {
-                            if(time2number(lastSelectedTime) - 1 > time2number(e.target.id.split(';')[0])) {
-                                var checked = false
-                                while(!checked) {
-                                    if(time2number(lastSelectedTime) !== time2number(e.target.id.split(';')[0])) {
-                                        document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"
-                                        lastSelectedTime = number2time(time2number(lastSelectedTime) - 1)
-                                    }
-                                    else checked = true; 
-                                }
-                            }
-                            else {
-                                document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"                            
-                                lastSelectedDay = e.target.id.split(';')[1];
-                                lastSelectedTime = e.target.id.split(';')[0];
-                            }
-                        }
-
-                    }
-                }
-                else {  //Start the selecting process
-                    if(lastSelectedDay >= e.target.id.split(';')[1]) {
-                        if(lastSelectedDay == e.target.id.split(';')[1] && time2number(lastSelectedTime) == time2number(e.target.id.split(';')[0])) {
-                            e.target.classList.add('selected')
-                            e.target.classList.add(getRadioChoice())
-                        }
-                        if(lastSelectedDay > e.target.id.split(';')[1]) {
-                            return
-                        }
-                        if(time2number(e.target.id.split(';')[0]) < time2number(lastSelectedTime)) {
-                            var checked = false
-                            while(!checked) {
-                                if(document.getElementById(number2time(time2number(lastSelectedTime) - 1) + ';' + lastSelectedDay).classList.contains('selected')) {
-                                    document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"
-                                    lastSelectedTime = number2time(time2number(lastSelectedTime) - 1)
-                                }
-                                else checked = true;
-                            }
-                            document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"
-                            return
-                        }
-
-                        if(time2number(e.target.id.split(';')[0]) > time2number(lastSelectedTime)) {
-                            var checked = false
-                            while(!checked) {
-                                if(!(time2number(e.target.id.split(';')[0]) == time2number(lastSelectedTime))) {
-                                    document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.add('selected')
-                                    document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.add(getRadioChoice())
-                                    lastSelectedTime = number2time(time2number(lastSelectedTime) + 1)
-                                }
-                                else checked = true;
-                            }
-                        }
-                        
-                    }
-                    
-                    e.target.classList.add('selected')
-                    e.target.classList.add(getRadioChoice())
-                    
-                    if(lastSelectedDay !== null && lastSelectedDay < e.target.id.split(';')[1]) {  //Do the check here
-                        //We check the times backwards to reach the last selected time before the switch
-                        //Backtrack to lastSelectedTime and lastSelectedDay
-                        let checked = false
-                        var timeId = time2number(e.target.id.split(';')[0]) - 1
-                        var day = e.target.id.split(';')[1]
-                        if(day <= 0) day = 0
-                        if(timeId < 0) {
-                            day = day - 1
-                            timeId = 95
-                        }
-                        while(!checked) {
-                            if(day < 0) day = 0  //Check for errors to the left top, which can occur when user moves mouse wildy
-                            if(day == lastSelectedDay && timeId == time2number(lastSelectedTime)) checked = true;
-                            if(!document.getElementById(number2time(timeId) + ';' + day).classList.contains('selected')) {
-                                document.getElementById(number2time(timeId) + ';' + day).classList.add('selected')
-                                document.getElementById(number2time(timeId) + ';' + day).classList.add(getRadioChoice())
-                                timeId = timeId - 1
-                                if(timeId < 0) {
-                                    day = day - 1;
-                                    timeId = 95  //95 because you check backwards
-                                }
-                            }
-                            else {
-                                checked = true
-                            }
-                        }
-                    } 
-                    lastSelectedDay = e.target.id.split(';')[1]
-                    lastSelectedTime = e.target.id.split(';')[0]
-                }
-            }
-        }
-        
-        const handleMouseDown = async e => {
-            if(e.target.classList.contains('firstRow')) return;
-            if(e.target.classList.contains('selected'))  {  //Check surrounding cells
-                var paint = false
-                if(!e.target.classList.contains(getRadioChoice())) paint = true
-                if(!paint)  e.target.className = "cell"
-                else e.target.className = "cell" + " selected " + getRadioChoice()
-                let currentTime = e.target.id.split(';')[0];
-                let currentDay = e.target.id.split(';')[1];
-                //Check backwards, then forwards
-                let checked = false
-                let checkingId = time2number(currentTime) - 1;
-                let checkingDay = currentDay;
-                if(checkingId < 0) {
-                    if(checkingDay == 0) checked = true;
-                    else {
-                        checkingDay = checkingDay - 1
-                        checkingId = 95
-                    }
-                }
-                while(!checked) {  //Check backwards
-                    if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
-                        if(!paint)  document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell"
-                        else document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell" + " selected " + getRadioChoice()
-                        if(checkingId == 0) {
-                            if(checkingDay == 0) { //All the way up left
-                                checked = true
-                            }
-                            else {
-                                checkingDay = checkingDay - 1;
-                                checkingId = 95  //95 because you check backwards
-                            }
-                        }
-                        else checkingId = checkingId - 1
-                    }
-                    else {
-                        checked = true
-                    }
-                }
-                checked = false
-                checkingId = time2number(currentTime) + 1;
-                checkingDay = currentDay;
-                if(checkingId > 95) {
-                    if(checkingDay == maxDays) checked = true
-                    else checkingDay = parseInt(checkingDay) + 1
-                    checkingId = 0
-                }
-                while(!checked) {  //Check forwards
-                    if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
-                        if(!paint)  document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell"
-                        else document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell" + " selected " + getRadioChoice()
-                        if(checkingId == 95) {
-                            if(checkingDay == maxDays) { 
-                                checked = true
-                            }
-                            else {
-                                checkingDay = parseInt(checkingDay) + 1;
-                                checkingId = 0 
-                            }
-                        }
-                        else checkingId = parseInt(checkingId) + 1
-                    }
-                    else {
-                        checked = true
-                    }
-                }
-            }
-            else {
-                e.target.classList.add('selected')
-                e.target.classList.add(getRadioChoice())
-                lastSelectedDay = e.target.id.split(';')[1]
-                lastSelectedTime = e.target.id.split(';')[0]
-                mouseDown = true
-            }
-        }
-
-        const handleMouseUp = async e => {
-            mouseDown = false
-        }
-
         setCalendar(
             <div>
                 <table>
@@ -430,6 +221,215 @@ export default function Meeting() {
                 </table>
             </div>
         )
+    }
+
+    const handleEnter = async e => {
+        if(e.target.classList.contains('firstRow')) return;
+        if(mouseDown) {
+            if(e.target.classList.contains('selected'))  { //Deselect
+                if(e.target.id.split(';')[1] >= lastSelectedDay) {
+                    if(time2number(e.target.id.split(';')[0]) >= time2number(lastSelectedTime)) {
+                        return
+                    }
+                    if(e.target.id.split(';')[1] > lastSelectedDay) {  //Join time slots
+                        
+                    }
+                }
+                if(parseInt(e.target.id.split(';')[1]) <= parseInt(lastSelectedDay)) {
+                    //Check for day crossing and kill everything from last selected time to current time but do not kill current time
+                    if(lastSelectedDay !== null && lastSelectedDay > e.target.id.split(';')[1]) {
+                        let checked = false
+                        var timeId = time2number(lastSelectedTime)
+                        var day = lastSelectedDay
+                        while(!checked) {
+                            if(document.getElementById(number2time(timeId) + ';' + day).classList.contains('selected')) {
+                                document.getElementById(number2time(timeId) + ';' + day).className = "cell"
+                                timeId = timeId - 1
+                                if(timeId < 0) {
+                                    day = day - 1;
+                                    timeId = 95  //95 because you check backwards
+                                }
+                                if(timeId == time2number(e.target.id.split(';')[0]) && day == e.target.id.split(';')[1])  checked = true
+                            }
+                            else {
+                                checked = true
+                            }
+                        }
+                        lastSelectedDay = e.target.id.split(';')[1];
+                        lastSelectedTime = e.target.id.split(';')[0];
+                    }
+                    //Just kill the last one and set yourself to the last selected one
+                    else if(lastSelectedTime !== null) {
+                        if(time2number(lastSelectedTime) - 1 > time2number(e.target.id.split(';')[0])) {
+                            var checked = false
+                            while(!checked) {
+                                if(time2number(lastSelectedTime) !== time2number(e.target.id.split(';')[0])) {
+                                    document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"
+                                    lastSelectedTime = number2time(time2number(lastSelectedTime) - 1)
+                                }
+                                else checked = true; 
+                            }
+                        }
+                        else {
+                            document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"                            
+                            lastSelectedDay = e.target.id.split(';')[1];
+                            lastSelectedTime = e.target.id.split(';')[0];
+                        }
+                    }
+
+                }
+            }
+            else {  //Start the selecting process
+                if(lastSelectedDay >= e.target.id.split(';')[1]) {
+                    if(lastSelectedDay == e.target.id.split(';')[1] && time2number(lastSelectedTime) == time2number(e.target.id.split(';')[0])) {
+                        e.target.classList.add('selected')
+                        e.target.classList.add(getRadioChoice())
+                    }
+                    if(lastSelectedDay > e.target.id.split(';')[1]) {
+                        return
+                    }
+                    if(time2number(e.target.id.split(';')[0]) < time2number(lastSelectedTime)) {
+                        var checked = false
+                        while(!checked) {
+                            if(document.getElementById(number2time(time2number(lastSelectedTime) - 1) + ';' + lastSelectedDay).classList.contains('selected')) {
+                                document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"
+                                lastSelectedTime = number2time(time2number(lastSelectedTime) - 1)
+                            }
+                            else checked = true;
+                        }
+                        document.getElementById(lastSelectedTime + ';' + lastSelectedDay).className = "cell"
+                        return
+                    }
+
+                    if(time2number(e.target.id.split(';')[0]) > time2number(lastSelectedTime)) {
+                        var checked = false
+                        while(!checked) {
+                            if(!(time2number(e.target.id.split(';')[0]) == time2number(lastSelectedTime))) {
+                                document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.add('selected')
+                                document.getElementById(lastSelectedTime + ';' + lastSelectedDay).classList.add(getRadioChoice())
+                                lastSelectedTime = number2time(time2number(lastSelectedTime) + 1)
+                            }
+                            else checked = true;
+                        }
+                    }
+                    
+                }
+                
+                e.target.classList.add('selected')
+                e.target.classList.add(getRadioChoice())
+                
+                if(lastSelectedDay !== null && lastSelectedDay < e.target.id.split(';')[1]) {  //Do the check here
+                    //We check the times backwards to reach the last selected time before the switch
+                    //Backtrack to lastSelectedTime and lastSelectedDay
+                    let checked = false
+                    var timeId = time2number(e.target.id.split(';')[0]) - 1
+                    var day = e.target.id.split(';')[1]
+                    if(day <= 0) day = 0
+                    if(timeId < 0) {
+                        day = day - 1
+                        timeId = 95
+                    }
+                    while(!checked) {
+                        if(day < 0) day = 0  //Check for errors to the left top, which can occur when user moves mouse wildy
+                        if(day == lastSelectedDay && timeId == time2number(lastSelectedTime)) checked = true;
+                        if(!document.getElementById(number2time(timeId) + ';' + day).classList.contains('selected')) {
+                            document.getElementById(number2time(timeId) + ';' + day).classList.add('selected')
+                            document.getElementById(number2time(timeId) + ';' + day).classList.add(getRadioChoice())
+                            timeId = timeId - 1
+                            if(timeId < 0) {
+                                day = day - 1;
+                                timeId = 95  //95 because you check backwards
+                            }
+                        }
+                        else {
+                            checked = true
+                        }
+                    }
+                } 
+                lastSelectedDay = e.target.id.split(';')[1]
+                lastSelectedTime = e.target.id.split(';')[0]
+            }
+        }
+    }
+    
+    const handleMouseDown = async e => {
+        if(e.target.classList.contains('firstRow')) return;
+        if(e.target.classList.contains('selected'))  {  //Check surrounding cells
+            var paint = false
+            if(!e.target.classList.contains(getRadioChoice())) paint = true
+            if(!paint)  e.target.className = "cell"
+            else e.target.className = "cell" + " selected " + getRadioChoice()
+            let currentTime = e.target.id.split(';')[0];
+            let currentDay = e.target.id.split(';')[1];
+            //Check backwards, then forwards
+            let checked = false
+            let checkingId = time2number(currentTime) - 1;
+            let checkingDay = currentDay;
+            if(checkingId < 0) {
+                if(checkingDay == 0) checked = true;
+                else {
+                    checkingDay = checkingDay - 1
+                    checkingId = 95
+                }
+            }
+            while(!checked) {  //Check backwards
+                if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
+                    if(!paint)  document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell"
+                    else document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell" + " selected " + getRadioChoice()
+                    if(checkingId == 0) {
+                        if(checkingDay == 0) { //All the way up left
+                            checked = true
+                        }
+                        else {
+                            checkingDay = checkingDay - 1;
+                            checkingId = 95  //95 because you check backwards
+                        }
+                    }
+                    else checkingId = checkingId - 1
+                }
+                else {
+                    checked = true
+                }
+            }
+            checked = false
+            checkingId = time2number(currentTime) + 1;
+            checkingDay = currentDay;
+            if(checkingId > 95) {
+                if(checkingDay == maxDays) checked = true
+                else checkingDay = parseInt(checkingDay) + 1
+                checkingId = 0
+            }
+            while(!checked) {  //Check forwards
+                if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
+                    if(!paint)  document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell"
+                    else document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell" + " selected " + getRadioChoice()
+                    if(checkingId == 95) {
+                        if(checkingDay == maxDays) { 
+                            checked = true
+                        }
+                        else {
+                            checkingDay = parseInt(checkingDay) + 1;
+                            checkingId = 0 
+                        }
+                    }
+                    else checkingId = parseInt(checkingId) + 1
+                }
+                else {
+                    checked = true
+                }
+            }
+        }
+        else {
+            e.target.classList.add('selected')
+            e.target.classList.add(getRadioChoice())
+            lastSelectedDay = e.target.id.split(';')[1]
+            lastSelectedTime = e.target.id.split(';')[0]
+            mouseDown = true
+        }
+    }
+
+    const handleMouseUp = async e => {
+        mouseDown = false
     }
 
     const typeChanged = async value => {
@@ -582,6 +582,11 @@ export default function Meeting() {
 
     const userChange = async e => {
         if(e !== "") setCurrentUser(e.target.value)
+        else if (e === "Add new User") {
+            document.getElementById("usernameInput").innerHTML = ""
+            
+        }
+
         //Clear page with else
     }
 
@@ -627,7 +632,7 @@ export default function Meeting() {
                     <h2 id='meetingHeader'>Please provide times for this meeting</h2>
                     {info}
                     <label for="username">Current User</label>
-                    <input type="text" list="datalist" onChange={e => userChange(e)} onKeyPress={e => userKeyPressed(e.key)}></input>
+                    <input type="text" list="datalist" onChange={e => userChange(e)} onKeyPress={e => userKeyPressed(e.key)} id='usernameInput'></input>
                     <datalist id="datalist">
                         {userOptions}
                     </datalist>
@@ -638,7 +643,7 @@ export default function Meeting() {
                     <button onClick={copyLink}>Copy Link</button>
                     <button onClick={generateMeeting}>Generate Best Meeting(s)</button>
                 </div>
-                <div id="tierSelector">
+                <div id="tierSelector" className='perfect'>
                     <h3>Select the quality of the time slot</h3>
                     <input type="radio" value="perfect" id="perfectRadio" onChange={e => radioChange(e.target.value)} checked={perfectChecked}/> Perfect for me
                     <input type="radio" value="works" id="worksRadio" onChange={e => radioChange(e.target.value)} checked={worksChecked}/> This would work
