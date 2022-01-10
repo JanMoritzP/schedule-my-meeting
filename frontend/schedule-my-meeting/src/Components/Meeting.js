@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, renderMatches } from 'react-router-dom';
 import './css/Meeting.css'
 
 export default function Meeting() {
@@ -14,9 +14,7 @@ export default function Meeting() {
     const [userOptions, setUserOptions] = useState()
     const [currentUser, setCurrentUser] = useState("")
     const [register, setRegister] = useState(false)
-    const [result, setResult] = useState(false)
     const [participants, setParticipants] = useState([])
-    var maxUsers = 0;
     var mouseDown = false;
     var maxDays = 0;
     var lastSelectedDay = null;
@@ -137,7 +135,6 @@ export default function Meeting() {
         let users = data.participants
         setParticipants(data.participants)
         let participantAmount = data.participantAmount
-        maxUsers = participantAmount
         while(participantAmount > users.length) {
             users.push("Add new User")
         }
@@ -157,6 +154,9 @@ export default function Meeting() {
                 You can select time slots that are not long enough, <br/>
                 but be aware that they will not be taken into account when trying to find the perfect time for the meeting. <br/>
                 Also keep in mind, that this website cannot account for any time you might need to prepare for the meeting or any travel time. <br/>
+                Lastly, when you have generated the best meeting, time slots will appear as shades of green. <br/>
+                This indicates the availability of the participants. A bright green indicates a good slot, a darker one a worse slot. <br/>
+                A white slots shows that there was no overlap of the provided times <br/>
             </p>
             </div>
         )
@@ -458,7 +458,7 @@ export default function Meeting() {
         }
         var data = []
         selectedElems.map(elem => {
-            data.push(elem.id.split(';')[0] + ";" + elem.id.split(';')[1] + ";" + elem.classList[2] + ";" + participants.indexOf(currentUser))
+            return data.push(elem.id.split(';')[0] + ";" + elem.id.split(';')[1] + ";" + elem.classList[2] + ";" + participants.indexOf(currentUser))
         })
         fetch("http://localhost:3080/data/saveTimeData", {
                 method: "POST", 
@@ -485,7 +485,7 @@ export default function Meeting() {
 
     function loadUserData() {
         var checked = false
-        if(currentUser === "Add new User" || currentUser === "") alert("Not allowed")
+        if(currentUser === "Add new User" || currentUser === "" || currentUser === "Results") alert("Not allowed")
         else if(name !== "") {
             fetch("http://localhost:3080/data/getTimeData", {
                 method: "POST", 
@@ -504,12 +504,9 @@ export default function Meeting() {
             })
             .then(data => {
                 if(checked) {
-                    var selectedElems = document.querySelectorAll('.selected')
-                    for(let i = 0; i < selectedElems.length; i++) {
-                        selectedElems.item(i).classList = "cell"
-                    }
+                    resetCalendar()
                     data.timeData.map(data => {
-                        document.getElementById(data.split(';')[0] + ";" + data.split(';')[1]).className = "cell " + "selected " + data.split(';')[2]
+                        return document.getElementById(data.split(';')[0] + ";" + data.split(';')[1]).className = "cell " + "selected " + data.split(';')[2]
                     })
                 }
             })
@@ -517,7 +514,7 @@ export default function Meeting() {
     }
 
     function registerUser() {
-        if(currentUser === "Add new User") alert("Not allowed")
+        if(currentUser === "Add new User" || currentUser === "" || currentUser === "Results") alert("Not allowed")
         else if(name !== "") {
             fetch("http://localhost:3080/data/addNewUser", {
                 method: "POST", 
@@ -539,10 +536,7 @@ export default function Meeting() {
                     }
                     setUserOptions(users.map(user => {return <option value={user}/>}))
                     setRegister(false)
-                    var selectedElems = document.querySelectorAll('.selected')
-                    for(let i = 0; i < selectedElems.length; i++) {
-                        selectedElems.item(i).classList = "cell"
-                    }
+                    resetCalendar()
                 }
             })
 
@@ -574,9 +568,22 @@ export default function Meeting() {
             })
             .then(res => res.json())
             .then(data => {
-                if(data.users !== null) {
+                if(data !== null) {
+                    resetCalendar()
                     console.log(data)
-                    setResult(true)
+                    data.data.map(data => {
+                        let green = (data.priority / (2*participants.length)) * 255; //Can range from 0 to 2*participants.length
+                        document.getElementById(data.time + ";" + data.date).style = `background-color: rgb(0, ${green}, 0)`
+                        return document.getElementById(data.time + ";" + data.date).className = "cell " + "selected "
+                    })
+                    var buttons = document.getElementsByClassName("controlButtons")
+                    for(let i = 0; i < buttons.length; i++) {
+                        buttons.item(i).hidden = true
+                    }
+                    document.getElementById("refreshButton").hidden = false;
+                    if(data.message !== "Possible") {
+                        document.getElementById("meetingInfoParagraph").innerHTML = "There is no possible time where all participants are available but this is the map of the times where some of the participants would be able to attend"
+                    }
                 }
             })
     }
@@ -592,6 +599,13 @@ export default function Meeting() {
                 selectedElems.item(i).classList = "cell"
             }
             setCurrentUser("Add new User")
+        }
+    }
+
+    function resetCalendar() {
+        var selectedElems = document.querySelectorAll('.selected')
+        for(let i = 0; i < selectedElems.length; i++) {
+            selectedElems.item(i).classList = "cell"
         }
     }
 
@@ -621,23 +635,18 @@ export default function Meeting() {
     
     if(!confirmed) {
         return (
-            <div>            
+            <div>      
+                <a href='/' id='homeButton'>Take me home</a>      
                 <label for="password">Please provide a password</label>
                 <input type="password" name="password" id="password" onChange={e => setPassword(e.target.value)}></input>
                 <button onClick={login}>Login</button>
             </div>
         )
     }
-
-    if(result) {
-        <div>
-            <p>Results have been found. Please check them in the console</p>
-            <button onClick={setResult(false)}>Take me back</button>
-        </div>
-    }
     else {
         return(
             <div>
+                <a href='/' id='homeButton'>Take me home</a>
                 <div id='meetingContainer'>
                     <h2 id='meetingHeader'>Please provide times for this meeting</h2>
                     {info}
@@ -647,10 +656,12 @@ export default function Meeting() {
                         {userOptions}
                     </datalist>
                     {checkUser()}
-                    {calendar}                    
-                    <button onClick={save}>Save</button>
-                    <button onClick={copyLink}>Copy Link</button>
-                    <button onClick={generateMeeting}>Generate Best Meeting(s)</button>
+                    {calendar}             
+                    <button onClick={save} className='controlButtons'>Save</button>
+                    <button onClick={copyLink} className='controlButtons'>Copy Link</button>
+                    <button onClick={generateMeeting} className='controlButtons'>Generate Best Meeting(s)</button>    
+                    <button onClick={() => window.location.reload()} hidden={true} id='refreshButton'>Take me back</button>
+                    <p id='meetingInfoParagraph'></p>
                 </div>
                 <div id="tierSelector" className='perfect'>
                     <h3>Select the quality of the time slot</h3>
