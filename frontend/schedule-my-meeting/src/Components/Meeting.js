@@ -8,7 +8,6 @@ export default function Meeting() {
     const [info, setInfo] = useState();
     const [password, setPassword] = useState();
     const [confirmed, setConfirmed] = useState(false);
-    const [type, setType] = useState("perfect");
     const [perfectChecked, setPerfectChecked] = useState(true);
     const [worksChecked, setWorksChecked] = useState(false);
     const [ratherNotChecked, setRatherNotChecked] = useState(false);
@@ -16,8 +15,8 @@ export default function Meeting() {
     const [currentUser, setCurrentUser] = useState("")
     const [register, setRegister] = useState(false)
     const [result, setResult] = useState(false)
-    var users = []
     const [participants, setParticipants] = useState([])
+    var maxUsers = 0;
     var mouseDown = false;
     var maxDays = 0;
     var lastSelectedDay = null;
@@ -135,9 +134,10 @@ export default function Meeting() {
     }
 
     const putInfoInPage = data => {
-        users = data.participants
+        let users = data.participants
         setParticipants(data.participants)
         let participantAmount = data.participantAmount
+        maxUsers = participantAmount
         while(participantAmount > users.length) {
             users.push("Add new User")
         }
@@ -433,7 +433,6 @@ export default function Meeting() {
     }
 
     const typeChanged = async value => {
-        setType(value)
         if(value === "perfect") {
             setPerfectChecked(true)
             setWorksChecked(false)
@@ -452,8 +451,6 @@ export default function Meeting() {
     }
 
     const save = async e => {
-        //timeData structure: {time};{dateIndex};{priority};{userIndex}
-        //Iterate over all timeSlots and add the ones that are selected to an array and send that one to the backend
         var collection = document.getElementsByClassName('selected')
         var selectedElems = []
         for(let i = 0; i < collection.length; i++) {
@@ -507,7 +504,7 @@ export default function Meeting() {
             })
             .then(data => {
                 if(checked) {
-                    var selectedElems = document.querySelectorAll('.selected, .perfect, .works, .ratherNot')
+                    var selectedElems = document.querySelectorAll('.selected')
                     for(let i = 0; i < selectedElems.length; i++) {
                         selectedElems.item(i).classList = "cell"
                     }
@@ -542,6 +539,10 @@ export default function Meeting() {
                     }
                     setUserOptions(users.map(user => {return <option value={user}/>}))
                     setRegister(false)
+                    var selectedElems = document.querySelectorAll('.selected')
+                    for(let i = 0; i < selectedElems.length; i++) {
+                        selectedElems.item(i).classList = "cell"
+                    }
                 }
             })
 
@@ -550,7 +551,7 @@ export default function Meeting() {
 
     const userKeyPressed = async e => {
         if(e === 'Enter') {
-            if(register) register()
+            if(register) registerUser()
             else loadUserData()
         }
     }
@@ -581,13 +582,22 @@ export default function Meeting() {
     }
 
     const userChange = async e => {
-        if(e !== "") setCurrentUser(e.target.value)
-        else if (e === "Add new User") {
-            document.getElementById("usernameInput").innerHTML = ""
-            
+        if(e !== "" && e !== "Add new User") setCurrentUser(e)
+        else if (e === "Add new User" || e === "") {
+            document.getElementById("usernameInput").value = ""
+            if(participants.indexOf('Add new User') !== -1)  document.getElementById("usernameInput").placeholder = "Add new User"
+            else document.getElementById("usernameInput").placeholder = ""
+            var selectedElems = document.querySelectorAll('.selected')
+            for(let i = 0; i < selectedElems.length; i++) {
+                selectedElems.item(i).classList = "cell"
+            }
+            setCurrentUser("Add new User")
         }
+    }
 
-        //Clear page with else
+    const inputPlaceholderSet = async e => {
+        if(participants.indexOf("Add new User") !== -1) e.target.placeholder = "Add new User"
+        else e.target.placeholder = ""
     }
 
     const radioChange = async choice => {
@@ -632,11 +642,10 @@ export default function Meeting() {
                     <h2 id='meetingHeader'>Please provide times for this meeting</h2>
                     {info}
                     <label for="username">Current User</label>
-                    <input type="text" list="datalist" onChange={e => userChange(e)} onKeyPress={e => userKeyPressed(e.key)} id='usernameInput'></input>
+                    <input type="text" list="datalist" onChange={e => userChange(e.target.value)} onKeyPress={e => userKeyPressed(e.key)} onSelect={e => inputPlaceholderSet(e)} id='usernameInput'></input>
                     <datalist id="datalist">
                         {userOptions}
                     </datalist>
-                    {users.map(user => {return <p>{user}</p>})}
                     {checkUser()}
                     {calendar}                    
                     <button onClick={save}>Save</button>
