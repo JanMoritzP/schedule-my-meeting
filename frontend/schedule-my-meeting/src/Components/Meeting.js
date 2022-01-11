@@ -356,6 +356,11 @@ export default function Meeting() {
         if(e.target.classList.contains('firstRow')) return;
         if(e.target.classList.contains('selected'))  {  //Check surrounding cells
             var paint = false
+            var selectedClasses = e.target.classList;
+            var selectedClass = ""
+            if(selectedClasses.contains('perfect')) selectedClass = 'perfect'
+            else if(selectedClasses.contains('works')) selectedClass = 'works'
+            else if(selectedClasses.contains('ratherNot')) selectedClass = 'ratherNot'
             if(!e.target.classList.contains(getRadioChoice())) paint = true
             if(!paint)  e.target.className = "cell"
             else e.target.className = "cell" + " selected " + getRadioChoice()
@@ -373,7 +378,7 @@ export default function Meeting() {
                 }
             }
             while(!checked) {  //Check backwards
-                if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
+                if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains(selectedClass)) {
                     if(!paint)  document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell"
                     else document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell" + " selected " + getRadioChoice()
                     if(checkingId == 0) {
@@ -400,7 +405,7 @@ export default function Meeting() {
                 checkingId = 0
             }
             while(!checked) {  //Check forwards
-                if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains('selected')) {
+                if(document.getElementById(number2time(checkingId) + ';' + checkingDay).classList.contains(selectedClass)) {
                     if(!paint)  document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell"
                     else document.getElementById(number2time(checkingId) + ';' + checkingDay).className = "cell" + " selected " + getRadioChoice()
                     if(checkingId == 95) {
