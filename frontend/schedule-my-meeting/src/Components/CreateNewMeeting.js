@@ -146,7 +146,7 @@ export default function CreateNewMeeting() {
             else {
                 setMeetingLength(e)
                 setError('')
-                document.getElementById('submitButton').disabled = false
+                checkSubmit()
             }
         }
         if(error === "") document.getElementById('submitButton').disabled = true
