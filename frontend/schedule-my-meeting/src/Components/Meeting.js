@@ -539,6 +539,7 @@ export default function Meeting() {
                     while(data.participantAmount > data.users.length) {
                         users.push("Add new User")
                     }
+                    setParticipants(users)
                     setUserOptions(users.map(user => {return <option value={user}/>}))
                     setRegister(false)
                     resetCalendar()
