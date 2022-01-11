@@ -14,6 +14,10 @@
     margin-left: 7rem;
 }
 
+#submitButton:disabled {
+    background-color: grey;
+}
+
 #meetingHeader {
     justify-self: center;
 }

@@ -61,7 +61,6 @@ export default function CreateNewMeeting() {
     const date = new Date();
     
     const [name, setName] = useState("");
-    const [uniqueCheck, setUniqueCheck] = useState("X")
     const [startingDate, setStartingDate] = useState(date.getFullYear() + "-" + pad2(parseInt((date.getMonth()) + 1)) + "-" + pad2(date.getDate()));
     const [endingDate, setEndingDate] = useState(getMinDate(startingDate));
     const [meetingLength, setMeetingLength] = useState('0:15');
@@ -117,11 +116,11 @@ export default function CreateNewMeeting() {
                     })
                 })
                 .then(res => {
-                    if(res.status === 200) setUniqueCheck("Yeah")
-                    else setUniqueCheck("X")
+                    if(res.status === 200) checkSubmit()
+                    else setError("This name is already in use")
                 })
             }
-            else setUniqueCheck("X")
+            else setError("You have to provide a name for the meeting")
             
         }, 500) //ms
         return () => clearTimeout(delayUniqueNameCheck)
@@ -147,49 +146,81 @@ export default function CreateNewMeeting() {
             else {
                 setMeetingLength(e)
                 setError('')
+                document.getElementById('submitButton').disabled = false
             }
         }
-        //Check if the meetingLength string is actually good
+        if(error === "") document.getElementById('submitButton').disabled = true
+    }
+
+    function checkSubmit() {
+        var disabled = false
+        if(document.getElementById('password').value === "") {
+            disabled = true
+            setError("You have to provide a password")
+        }    
+        else if(document.getElementById('participantAmount').value === "") {
+            disabled = true
+            setError("You have to provide a participant amount")
+        }
+        else if(document.getElementById('participantAmount').value === 0) {
+            disabled = true
+            setError("The participant amount cannot be 0")
+        }
+        else if(document.getElementById('meetingLength').value === "") {
+            disabled = true
+            setError("You have to provide a meetingLength")
+        }
+
+        if(disabled) {
+            document.getElementById('submitButton').disabled = true
+        }
+        else {
+            document.getElementById('submitButton').disabled = false
+            setError("")
+        }
     }
 
     return(
-        <div id='CreateMeeting'>
-            <h2 id='meetingHeader'>Create a new meeting</h2>
-            <form onSubmit={handleSubmit}>
-                <div id='nameDiv'>
-                    <label for="name" id='labelName'>Name of the meeting {uniqueCheck}</label>
-                    <input type="text" id="name" name="name" onChange={e => setName(e.target.value)}></input>
-                </div>
-                <div id='passwordDiv'>
-                    <label for="password" id='labelPassword'>Password of the meeting</label>
-                    <input type="password" id="password" name="password"></input>
-                </div>
-                <div id='startingDiv'>
-                    <label for="startingDate" id='labelStartingDate'>Starting Date</label>
-                    <input type="date" id="startingDate" name="startingDate"
-                    min={date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate()} value={startingDate}
-                    onChange={e => {setStartingDate(e.target.value);calcEndingDate(e)}}></input>
-                </div>
-                <div id='endingDiv'>
-                    <label for="endingDate" id='labelEndingDate'>Ending Date</label>       
-                    <input type="date" id="endingDate" name="endingDate" min={getMinDate(startingDate)} value={endingDate} onChange={e => setEndingDate(e.target.value)}></input>     
-                </div>
-                <div id='lengthDiv'>
-                    <label for="meetingLength" id='labelMeetingLength'>Length of the meeting</label>
-                    <input type="text" list="data" onChange={e => meetingLengthChanged(e.target.value)} id="meetingLength" name="meetingLength"></input>
-                    <datalist id="data">
-                        {times.map(time => {
-                            return <option value={time} />
-                        })}
-                    </datalist>
-                </div>
-                <div id='participantDiv'>
-                    <label for="participantAmount" id='labelParticipantAmount'>Amount of participants</label>
-                    <input type="number" id="participantAmount" name="participantAmount"></input>           
-                </div>
-                <input type="submit" value="Create" id='submitButton'></input>
-                <p>{error}</p>
-            </form>
+        <div>
+            <a href='/' id='homeButton'>Take me home</a>
+            <div id='CreateMeeting'>
+                <h2 id='meetingHeader'>Create a new meeting</h2>
+                <form onSubmit={handleSubmit}>
+                    <div id='nameDiv'>
+                        <label for="name" id='labelName'>Name of the meeting</label>
+                        <input type="text" id="name" name="name" onChange={e => setName(e.target.value)}></input>
+                    </div>
+                    <div id='passwordDiv'>
+                        <label for="password" id='labelPassword'>Password of the meeting</label>
+                        <input type="password" id="password" name="password" onChange={checkSubmit}></input>
+                    </div>
+                    <div id='startingDiv'>
+                        <label for="startingDate" id='labelStartingDate'>Starting Date</label>
+                        <input type="date" id="startingDate" name="startingDate"
+                        min={date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate()} value={startingDate}
+                        onChange={e => {setStartingDate(e.target.value);calcEndingDate(e)}}></input>
+                    </div>
+                    <div id='endingDiv'>
+                        <label for="endingDate" id='labelEndingDate'>Ending Date</label>       
+                        <input type="date" id="endingDate" name="endingDate" min={getMinDate(startingDate)} value={endingDate} onChange={e => setEndingDate(e.target.value)}></input>     
+                    </div>
+                    <div id='lengthDiv'>
+                        <label for="meetingLength" id='labelMeetingLength'>Length of the meeting</label>
+                        <input type="text" list="data" onChange={e => meetingLengthChanged(e.target.value)} id="meetingLength" name="meetingLength"></input>
+                        <datalist id="data">
+                            {times.map(time => {
+                                return <option value={time} />
+                            })}
+                        </datalist>
+                    </div>
+                    <div id='participantDiv'>
+                        <label for="participantAmount" id='labelParticipantAmount'>Amount of participants</label>
+                        <input type="number" id="participantAmount" onChange={checkSubmit} name="participantAmount"></input>           
+                    </div>
+                    <input type="submit" value="Create" id='submitButton' disabled={true}></input>
+                    <p>{error}</p>
+                </form>
+            </div>
         </div>
     )
 
