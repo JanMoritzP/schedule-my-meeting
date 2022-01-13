@@ -22,7 +22,7 @@ export default function Meeting() {
     const navigate = useNavigate();
     
     useEffect(() => {
-        if(!localStorage.getItem('password')) return
+        if(!localStorage.getItem('password'  + name)) return
         fetch("http://localhost:3080/data/joinMeeting", {
             method: "POST", 
             headers: {
@@ -30,7 +30,7 @@ export default function Meeting() {
             },
             body: JSON.stringify({
                 name: name,
-                password: localStorage.getItem('password')
+                password: localStorage.getItem('password'  + name)
             })
         })
         .then(res => {
@@ -63,7 +63,7 @@ export default function Meeting() {
                     body: JSON.stringify({
                         user: currentUser,
                         meeting: name,
-                        password: localStorage.getItem('password')
+                        password: localStorage.getItem('password'  + name)
                     })
                 })
                 .then(res => {
@@ -476,7 +476,7 @@ export default function Meeting() {
                 body: JSON.stringify({
                     name: name,
                     user: currentUser,
-                    password: localStorage.getItem('password'),
+                    password: localStorage.getItem('password'  + name),
                     data: data
                 })
             })
@@ -503,7 +503,7 @@ export default function Meeting() {
                 body: JSON.stringify({
                     name: name,
                     user: currentUser,
-                    password: localStorage.getItem('password')
+                    password: localStorage.getItem('password'  + name)
                 })
             })
             .then(res => {
@@ -533,7 +533,7 @@ export default function Meeting() {
                 body: JSON.stringify({
                     meeting: name,
                     user: currentUser,
-                    password: localStorage.getItem('password')
+                    password: localStorage.getItem('password'  + name)
                 })
             })
             .then(res => {
@@ -581,7 +581,7 @@ export default function Meeting() {
             },
             body: JSON.stringify({
                 name: name,
-                password: localStorage.getItem('password')
+                password: localStorage.getItem('password'  + name)
             })
         })
         .then(res => {
@@ -603,7 +603,7 @@ export default function Meeting() {
             },
             body: JSON.stringify({
                 name: name,
-                password: localStorage.getItem('password')
+                password: localStorage.getItem('password'  + name)
             })
         })
         .then(res => res.json())
@@ -675,11 +675,13 @@ export default function Meeting() {
     
     if(!confirmed) {
         return (
-            <div>      
+            <div>
                 <a href='/' id='homeButton'>Take me home</a>      
-                <label for="password">Please provide a password</label>
-                <input type="password" name="password" id="password" onChange={e => setPassword(e.target.value)}></input>
-                <button onClick={login}>Login</button>
+                <div id='loginDiv'>
+                    <label for="password">Please provide a password</label>
+                    <input type="password" name="password" id="password" onChange={e => setPassword(e.target.value)}></input>
+                    <button onClick={login}>Login</button>
+                </div>     
             </div>
         )
     }
