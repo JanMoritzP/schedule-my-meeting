@@ -80,73 +80,55 @@ router.post('/data/getBestTime', (req, res) => {
                         }
                     }
                 }
+                //First sort data by date
+                data.sort((date1, date2) => { //Negative value if first < second
+                    if(date1.date < date2.date) return -1
+                    else if(date1.date === date2.date) return 0
+                    else return 1
+                })
+
+                //Before i can check if everyone is available, i first check if the times are long enough for the meeting length
+                var timedMeetings = []
+                if(time2number(meeting.meetingLength) !== 1) {
+                    for(let i = 0; i < data.length; i++) {
+                        //Look ahead meetingLength and if true, take everything until it breaks, if not, go to the failing index - 1 [because of incrementation] and look from there
+                        //How to check: Make times to numbers and check if number is exactly one bigger and if the date is still the same
+                        var checked = true
+                        for(let k = 0; k < time2number(meeting.meetingLength) - 1 && i + k < data.length - 1; k++) {
+                            if(!((time2number(data[i + k].time) === (time2number(data[i + k + 1].time) - 1))  //Check if time is correct and the date is the same
+                            && (data[i + k].date === data[i + k + 1].date))) {
+                                checked = false
+                                i = i + k
+                                break
+                            }
+                        }
+                        if(i === data.length - 1) break
+                        if(checked) { //Add stuff and look ahead
+                            timedMeetings.push(data[i])
+                            while(i < data.length - 1 && (time2number(data[i].time) === (time2number(data[i + 1].time) - 1)) && (data[i].date === data[i + 1].date)) {
+                                timedMeetings.push(data[i + 1])
+                                i = i + 1
+                            }
+                        }
+                    }
+                }
+                else timedMeetings = data
+
                 //Vector now filled. Now it needs to be filtered by checking if everyone is available and for the length of the time slot                
-                var allAvailable = data.filter((element) => {
+                var allAvailable = timedMeetings.filter((element) => {
                     return element.users === meeting.participantAmount
                 })
 
-                //Check if all availabe  is empty, if so, then put in the best possible time, even if not all people can participate
-                if(allAvailable.length === 0) {
-                    var bestMeetings = []
-                    if(time2number(meeting.meetingLength) !== 1) {
-                        for(let i = 0; i < data.length; i++) {
-                            //Look ahead meetingLength and if true, take everything until it breaks, if not, go to the failing index - 1 [because if incrementation] and look from there
-                            //How to check: Make times to numbers and check if number is exactly one bigger and if the date is still the same
-                            var checked = true
-                            for(let k = 0; k < time2number(meeting.meetingLength) - 1 && i + k < data.length - 1; k++) {
-                                if(!((time2number(data[i + k].time) === (time2number(data[i + k + 1].time) - 1))  //Check if time is correct and the date is the same
-                                && (data[i + k].date === data[i + k + 1].date))) {
-                                    checked = false
-                                    i = i + k
-                                    break
-                                }
-                            }
-                            if(i === data.length - 1) break
-                            if(checked) { //Add stuff and look ahead
-                                bestMeetings.push(data[i])
-                                while(i < data.length - 1 && (time2number(data[i].time) === (time2number(data[i + 1].time) - 1)) && (data[i].date === data[i + 1].date)) {
-                                    bestMeetings.push(data[i + 1])
-                                    i = i + 1
-                                }
-                            }
-                        }
-                    }
-                    else bestMeetings = data
+                if(allAvailable.length !== 0) {
                     res.status(200).send({
-                        data: bestMeetings,
-                        message: "Not possible"
+                        data: allAvailable,
+                        message: "Possible"
                     })
                 }
                 else {
-                    //Check for length
-                    var bestMeetings = []
-                    if(time2number(meeting.meetingLength) !== 1) {
-                        for(let i = 0; i < allAvailable.length; i++) {
-                            //Look ahead meetingLength and if true, take everything until it breaks, if not, go to the failing index - 1 [because if incrementation] and look from there
-                            //How to check: Make times to numbers and check if number is exactly one bigger and if the date is still the same
-                            var checked = true
-                            for(let k = 0; k < time2number(meeting.meetingLength) - 1 && i + k < allAvailable.length - 1; k++) {
-                                if(!((time2number(allAvailable[i + k].time) === (time2number(allAvailable[i + k + 1].time) - 1))  //Check if time is correct and the date is the same
-                                && (allAvailable[i + k].date === allAvailable[i + k + 1].date))) {
-                                    checked = false
-                                    i = i + k
-                                    break
-                                }
-                            }
-                            if(i === allAvailable.length - 1) break
-                            if(checked) { //Add stuff and look ahead
-                                bestMeetings.push(allAvailable[i])
-                                while(i < allAvailable.length - 1 && (time2number(allAvailable[i].time) === (time2number(allAvailable[i + 1].time) - 1)) && (allAvailable[i].date === allAvailable[i + 1].date)) {
-                                    bestMeetings.push(allAvailable[i + 1])
-                                    i = i + 1
-                                }
-                            }
-                        }
-                    }
-                    else bestMeetings = allAvailable
                     res.status(200).send({
-                        data: bestMeetings,
-                        message: "Possible"
+                        data: timedMeetings,
+                        message: "Not Possible"
                     })
                 }
             }

@@ -519,6 +519,7 @@ export default function Meeting() {
     }
 
     function registerUser() {
+        var checked = true
         if(currentUser === "Add new User" || currentUser === "" || currentUser === "Results") alert("Not allowed")
         else if(name !== "") {
             fetch("http://localhost:3080/data/addNewUser", {
@@ -532,9 +533,16 @@ export default function Meeting() {
                     password: localStorage.getItem('password')
                 })
             })
-            .then(res => res.json())
+            .then(res => {
+                if(res.status !== 200) {
+                    document.getElementById('meetingInfoParagraph').innerHTML = "You have to register a unique username"
+                    checked = false;
+                }
+                else document.getElementById('meetingInfoParagraph').innerHTML = ""
+                return res.json()
+            })
             .then(data => {
-                if(data.users !== null) {
+                if(data.users !== null && checked) {
                     let users = data.users;
                     while(data.participantAmount > data.users.length) {
                         users.push("Add new User")
