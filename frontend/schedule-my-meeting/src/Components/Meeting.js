@@ -54,8 +54,7 @@ export default function Meeting() {
 
     useEffect(() => {
         const delayUniqueNameCheck = setTimeout(() => {
-            //Send the request here
-            if(currentUser !== "") {
+            if(currentUser !== "" && currentUser !== "Add new User") {
                 fetch("http://localhost:3080/data/checkNewUser", {
                     method: "POST", 
                     headers: {
@@ -482,7 +481,7 @@ export default function Meeting() {
                 })
             })
             .then(res => {
-                if(res.status === 200) alert("Nice")
+                if(res.status === 200) document.getElementById('errorParagraph').innerHTML = "saved"
             })
             
         
@@ -573,37 +572,60 @@ export default function Meeting() {
         else return <button onClick={e => loadUserData()}>Load</button>
     }
 
+    function deleteMeeting() {
+
+        fetch("http://localhost:3080/data/deleteMeeting", {
+            method: "POST", 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                password: localStorage.getItem('password')
+            })
+        })
+        .then(res => {
+            if(res.status === 200) {
+                navigate('/')
+            }
+            else {
+                document.getElementById('errorParagraph').innerHTML = res.message
+            }
+            return res.json()
+        })
+    }
+
     function generateMeeting() {
         fetch("http://localhost:3080/data/getBestTime", {
-                method: "POST", 
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: name,
-                    password: localStorage.getItem('password')
+            method: "POST", 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                password: localStorage.getItem('password')
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data !== null) {
+                resetCalendar()
+                console.log(data)
+                data.data.map(data => {
+                    let green = (data.priority / (2*participants.length)) * 255; //Can range from 0 to 2*participants.length
+                    document.getElementById(data.time + ";" + data.date).style = `background-color: rgb(0, ${green}, 0)`
+                    return document.getElementById(data.time + ";" + data.date).className = "cell " + "selected "
                 })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data !== null) {
-                    resetCalendar()
-                    console.log(data)
-                    data.data.map(data => {
-                        let green = (data.priority / (2*participants.length)) * 255; //Can range from 0 to 2*participants.length
-                        document.getElementById(data.time + ";" + data.date).style = `background-color: rgb(0, ${green}, 0)`
-                        return document.getElementById(data.time + ";" + data.date).className = "cell " + "selected "
-                    })
-                    var buttons = document.getElementsByClassName("controlButtons")
-                    for(let i = 0; i < buttons.length; i++) {
-                        buttons.item(i).hidden = true
-                    }
-                    document.getElementById("refreshButton").hidden = false;
-                    if(data.message !== "Possible") {
-                        document.getElementById("errorParagraph").innerHTML = "There is no possible time where all participants are available but this is the map of the times where some of the participants would be able to attend"
-                    }
+                var buttons = document.getElementsByClassName("controlButtons")
+                for(let i = 0; i < buttons.length; i++) {
+                    buttons.item(i).hidden = true
                 }
-            })
+                document.getElementById("refreshButton").hidden = false;
+                if(data.message !== "Possible") {
+                    document.getElementById("errorParagraph").innerHTML = "There is no possible time where all participants are available but this is the map of the times where some of the participants would be able to attend"
+                }
+            }
+        })
     }
 
     const userChange = async e => {
@@ -677,7 +699,8 @@ export default function Meeting() {
                     {calendar}             
                     <button onClick={save} className='controlButtons'>Save</button>
                     <button onClick={copyLink} className='controlButtons'>Copy Link</button>
-                    <button onClick={generateMeeting} className='controlButtons'>Generate Best Meeting(s)</button>    
+                    <button onClick={generateMeeting} className='controlButtons'>Generate Best Meeting(s)</button>
+                    <button onClick={deleteMeeting} className='controlButtons'>Delete Meeting</button>
                     <button onClick={() => window.location.reload()} hidden={true} id='refreshButton'>Take me back</button>
                     <p id='errorParagraph'></p>
                 </div>
