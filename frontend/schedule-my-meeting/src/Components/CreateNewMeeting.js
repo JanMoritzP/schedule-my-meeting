@@ -126,15 +126,38 @@ export default function CreateNewMeeting() {
         return () => clearTimeout(delayUniqueNameCheck)
     }, [name])
 
-    const calcEndingDate = async e => {
-        const minDate = getMinDate(e.target.value).split('-');
+    const calcEndingDate = async date => {
+        const minDate = getMinDate(date).split('-');
         const endingDateArray = endingDate.split('-');
         if(endingDateArray[0] > minDate[0]) return;
-        else if(endingDateArray[0] < minDate[0]) return setEndingDate(getMinDate(e.target.value));
+        else if(endingDateArray[0] < minDate[0]) return setEndingDate(getMinDate(date));
         else if(endingDateArray[1] > minDate[1]) return;
-        else if(endingDateArray[1] < minDate[1]) return setEndingDate(getMinDate(e.target.value));        
+        else if(endingDateArray[1] < minDate[1]) return setEndingDate(getMinDate(date));        
         else if(endingDate[2] > minDate[2]) return;
-        else return setEndingDate(getMinDate(e.target.value))
+        else return setEndingDate(getMinDate(date))
+    }
+
+    const checkEndingDate = async e => {
+        const minDate = getMinDate(document.getElementById('startingDate').value).split('-');
+        const endingDateArray = e.target.value.split('-');
+        console.log(minDate[2])
+        console.log(endingDateArray[2])
+        console.log(endingDateArray[2] > minDate[2])
+        if(endingDateArray[0] > minDate[0]) return;
+        else if(endingDateArray[0] < minDate[0]) {
+            e.target.value = getMinDate(document.getElementById('startingDate').value)
+            setEndingDate(getMinDate(document.getElementById('startingDate').value))
+        }
+        else if(endingDateArray[1] > minDate[1]) return;
+        else if(endingDateArray[1] < minDate[1]) {
+            e.target.value = getMinDate(document.getElementById('startingDate').value)
+            setEndingDate(getMinDate(document.getElementById('startingDate').value))
+        }  
+        else if(endingDateArray[2] > minDate[2]) return;
+        else {
+            e.target.value = getMinDate(document.getElementById('startingDate').value)
+            setEndingDate(getMinDate(document.getElementById('startingDate').value))
+        }
     }
 
     const meetingLengthChanged = async e => {
@@ -198,11 +221,11 @@ export default function CreateNewMeeting() {
                         <label for="startingDate" id='labelStartingDate'>Starting Date</label>
                         <input type="date" id="startingDate" name="startingDate"
                         min={date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate()} value={startingDate}
-                        onChange={e => {setStartingDate(e.target.value);calcEndingDate(e)}}></input>
+                        onChange={e => {setStartingDate(e.target.value);calcEndingDate(e.target.value)}}></input>
                     </div>
                     <div id='endingDiv'>
                         <label for="endingDate" id='labelEndingDate'>Ending Date</label>       
-                        <input type="date" id="endingDate" name="endingDate" min={getMinDate(startingDate)} value={endingDate} onChange={e => setEndingDate(e.target.value)}></input>     
+                        <input type="date" id="endingDate" name="endingDate" min={getMinDate(startingDate)} value={endingDate} onChange={e => {setEndingDate(e.target.value);checkEndingDate(e)}}></input>     
                     </div>
                     <div id='lengthDiv'>
                         <label for="meetingLength" id='labelMeetingLength'>Length of the meeting</label>
