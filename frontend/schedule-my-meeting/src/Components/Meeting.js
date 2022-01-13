@@ -142,15 +142,19 @@ export default function Meeting() {
         let startingDate = new Date(data.startingDate)
         let endingDate = new Date(data.endingDate)
         
-
+        const weeksdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
         setInfo(
             <div>
-            <p>Starting Date: {startingDate.toString()}</p>
-            <p>Ending Date: {endingDate.toString()}</p>
-            <p>
+            <p>Starting Date: {weeksdays[startingDate.getDay()]} {months[startingDate.getMonth()]} {startingDate.getDate()} {startingDate.getFullYear()}</p>
+            <p>Ending Date: {weeksdays[endingDate.getDay()]} {months[endingDate.getMonth()]} {endingDate.getDate()} {endingDate.getFullYear()}</p>
+            <p id='meetingInfoParagraph'>
                 Length of the meeting: {data.meetingLength} <br/>
                 Remember to select time slots long enough for the meeting to happen. <br/>
+                When you select slots, please be advised that it is intended, that each slot represents the starting time of a 15 minute interval <br />
+                That means, when you select slots ranging from 1:00pm to 3:00pm that would mean you have time from 1:00pm to 3:15pm <br />
+                Of course you could plan with your team differently, but please consider that you would have to adjust the meeting length <br />
                 You can select time slots that are not long enough, <br/>
                 but be aware that they will not be taken into account when trying to find the perfect time for the meeting. <br/>
                 Also keep in mind, that this website cannot account for any time you might need to prepare for the meeting or any travel time. <br/>
@@ -535,10 +539,10 @@ export default function Meeting() {
             })
             .then(res => {
                 if(res.status !== 200) {
-                    document.getElementById('meetingInfoParagraph').innerHTML = "You have to register a unique username"
+                    document.getElementById('errorParagraph').innerHTML = "You have to register a unique username"
                     checked = false;
                 }
-                else document.getElementById('meetingInfoParagraph').innerHTML = ""
+                else document.getElementById('errorParagraph').innerHTML = ""
                 return res.json()
             })
             .then(data => {
@@ -596,7 +600,7 @@ export default function Meeting() {
                     }
                     document.getElementById("refreshButton").hidden = false;
                     if(data.message !== "Possible") {
-                        document.getElementById("meetingInfoParagraph").innerHTML = "There is no possible time where all participants are available but this is the map of the times where some of the participants would be able to attend"
+                        document.getElementById("errorParagraph").innerHTML = "There is no possible time where all participants are available but this is the map of the times where some of the participants would be able to attend"
                     }
                 }
             })
@@ -675,7 +679,7 @@ export default function Meeting() {
                     <button onClick={copyLink} className='controlButtons'>Copy Link</button>
                     <button onClick={generateMeeting} className='controlButtons'>Generate Best Meeting(s)</button>    
                     <button onClick={() => window.location.reload()} hidden={true} id='refreshButton'>Take me back</button>
-                    <p id='meetingInfoParagraph'></p>
+                    <p id='errorParagraph'></p>
                 </div>
                 <div id="tierSelector" className='perfect'>
                     <h3>Select the quality of the time slot</h3>

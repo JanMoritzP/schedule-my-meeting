@@ -11,4 +11,14 @@
 
 body {
     background-color: var(--mainBgColor);
+    font-size: 16pt;
+}
+
+button {
+    font-size: 16pt;
+}
+
+input {
+    font-size: 16pt;
+
 }
