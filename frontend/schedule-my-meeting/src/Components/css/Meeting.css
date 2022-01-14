@@ -8,7 +8,7 @@
 }
 #tierSelector {
     position: absolute;
-    inset: 20% auto auto 2rem;
+    inset: 10rem auto auto 2rem;
     display: grid;
     grid-auto-flow: row;
     padding: 2rem 2rem 2.5rem 2rem;
@@ -67,5 +67,50 @@ table {
 
 #loginDiv {
     position: absolute;
-    inset: 20% auto auto 40%;
+    inset: 15rem auto auto 20vw;
+}
+
+@media only screen and (max-width: 1600px) {
+    #meetingContainer {
+        inset: 20rem 0 auto auto;
+    }
+
+    #tierSelector {
+        inset: 10rem 5vw auto auto;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    #tierSelector {
+        inset: 10rem auto auto 0;
+    }
+    #meetingContainer {
+        inset: 33rem 0 auto auto;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    #loginDiv {
+        inset: 20rem auto auto 5vw;
+    }
+    #tierSelector {
+        inset: 16rem auto auto 0;
+    }
+    #meetingContainer {
+        inset: 36rem auto auto 1vw;
+        width: 80vw;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    #loginDiv {
+        inset: 40vh auto auto 5vw;
+    }
+    #tierSelector {
+        inset: 16rem 0 auto auto;
+    }
+    #meetingContainer {
+        inset: 40rem auto auto 1vw;
+        width: 80vw;
+    }
 }

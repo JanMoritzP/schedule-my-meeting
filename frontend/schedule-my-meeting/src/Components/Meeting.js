@@ -22,7 +22,7 @@ export default function Meeting() {
     const navigate = useNavigate();
     
     useEffect(() => {
-        if(localStorage.getItem('password' + name) === null) return
+        if(localStorage.getItem('password' + name) === undefined || localStorage.getItem('password' + name) === null) return
         fetch("http://localhost:3080/data/joinMeeting", {
             method: "POST", 
             headers: {

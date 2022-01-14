@@ -17,7 +17,7 @@ router.post('/data/joinMeeting', (req, res) => {
         if(err) res.status(500).send({message: 'Error accessing the database'})
         else if(!meeting) res.status(409).send({message: `There is no meeting named ${req.body.name}`})
         else {
-            if(req.body.password === "" || req.body.password === undefined) res.status(403).send({message: "You have to provide a password"})
+            if(req.body.password === "" || req.body.password === undefined || req.body.password === null) res.status(403).send({message: "You have to provide a password"})
             else if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The entered password is incorrect'})
             else {
                 res.status(200).send({

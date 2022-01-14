@@ -1,6 +1,6 @@
 #meetingLink {
     position: absolute;
-    inset: 20vh auto auto 1vw;
+    inset: 10rem auto auto 1vw;
     height: 4rem;
     width: 10rem;
     margin: 1rem;
@@ -30,7 +30,7 @@
     height: fit-content;
     width: 50%;
     font-size: 16pt;
-    inset: 14% auto auto 15vw;
+    inset: 9rem auto auto 15vw;
     padding: 2rem;
     margin: 2rem;
     box-shadow: 0px 0px 10px 15px var(--mainBgColorTransp) inset;
@@ -38,7 +38,7 @@
 
 #contactWrapper {
     position: absolute;
-    inset: 17.2vh 2vw auto auto;
+    inset: 11rem 2vw auto auto;
     background-color: var(--borderColor);
     display: flex;
     flex-direction: column;
@@ -66,14 +66,14 @@ p {
     }
 
     #infoParagraph {
-        inset: 15vh auto auto 0;
+        inset: 9rem auto auto 0;
         box-shadow: none;
         padding: none;
         width: 40vw;
     }
 
     #contactWrapper {
-        inset: 18.5vh 10vw auto auto;
+        inset: 11rem 10vw auto auto;
         width: 30vw;
         box-shadow: none;
         padding: none;
@@ -82,18 +82,18 @@ p {
 }
 @media only screen and (max-width: 800px) {
     #meetingLink {
-        inset: 65vh auto auto 30vw;
+        inset: 35rem auto auto 30vw;
     }
 
     #infoParagraph {
-        inset: 80vh -1vw auto auto;
+        inset: 41rem -1vw auto auto;
         width: 88vw;
         margin: 0;
         box-shadow: none;
     }
 
     #contactWrapper {
-        inset: 18vh auto auto 0;
+        inset: 10rem auto auto 0;
         width: 100vw;
         margin: 0;
         box-shadow: none;
@@ -101,11 +101,11 @@ p {
 }
 @media only screen and (max-width: 400px) {
     #meetingLink {
-        inset: 75vh auto auto 30vw;
+        inset: 44rem auto auto 30vw;
     }
 
     #infoParagraph {
-        inset: 90vh -10vw auto auto;
+        inset: 50rem -10vw auto auto;
         width: 88vw;
         margin: 0;
         box-shadow: none;

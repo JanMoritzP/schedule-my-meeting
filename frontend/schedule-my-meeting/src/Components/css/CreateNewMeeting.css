@@ -1,6 +1,6 @@
 #CreateMeeting {
     position: absolute;
-    inset: 20% 40% auto auto;
+    inset: 10rem 40% auto auto;
     padding: 2rem;
     display: grid;
     grid-auto-flow: row;
@@ -42,20 +42,20 @@ form div {
 @media only screen and (max-width: 800px) {
     #CreateMeeting {
         position: absolute;
-        inset: auto auto 0 20vw;
+        inset: 10rem auto auto 20vw;
     }
 
     #homeButton {
-        inset: 20vh auto auto 0;
+        inset: 10rem auto auto 0;
     }
 }
 @media only screen and (max-width: 600px) {
     #CreateMeeting {
         position: absolute;
-        inset: 30vh auto auto 0;
+        inset: 15rem auto auto 0;
     }
 
     #homeButton {
-        inset: 20vh auto auto 0;
+        inset: 10rem auto auto 0;
     }
 }

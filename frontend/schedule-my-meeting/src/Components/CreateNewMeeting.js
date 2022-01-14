@@ -193,7 +193,6 @@ export default function CreateNewMeeting() {
             disabled = true
             setError("You have to provide a meetingLength")
         }
-
         if(disabled) {
             document.getElementById('submitButton').disabled = true
         }
@@ -204,7 +203,7 @@ export default function CreateNewMeeting() {
     }
 
     const handleNameInput = async e => {
-        setName(e.target.value.replace(/[^a-zA-Z\d\S]+/g, ""))
+        setName(e.target.value.replace(/[^a-zA-Z0-9]+/g, ""))
     }
 
     return(

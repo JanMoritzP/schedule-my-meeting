@@ -17,7 +17,7 @@ router.post('/data/createNewMeeting', (req, res) => {
         if(err) res.status(500).send({message: "There has been an error accessing the database"})
         else if (meeting) res.status(409).send({message: "You have to provide a unique name for a meeting"})
         else {
-            const rgx = new RegExp('[^a-zA-Z\d\s]+')
+            const rgx = new RegExp('[^a-zA-Z0-9]')
             if(rgx.test(req.body.name)) return res.status(409).send({message: "You have forbidden characters in your meeting name"})
             if(req.body.meetingLength.split(':')[1]%15 !== 0 || req.body.meetingLength.split(':') < 0) return res.status(409).send({message: 'The provided meeting length is invalid'})
             if(req.body.name === "") res.status(409).send({message: "You have to provide a name"})
