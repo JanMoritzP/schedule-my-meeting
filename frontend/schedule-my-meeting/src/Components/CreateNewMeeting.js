@@ -140,9 +140,6 @@ export default function CreateNewMeeting() {
     const checkEndingDate = async e => {
         const minDate = getMinDate(document.getElementById('startingDate').value).split('-');
         const endingDateArray = e.target.value.split('-');
-        console.log(minDate[2])
-        console.log(endingDateArray[2])
-        console.log(endingDateArray[2] > minDate[2])
         if(endingDateArray[0] > minDate[0]) return;
         else if(endingDateArray[0] < minDate[0]) {
             e.target.value = getMinDate(document.getElementById('startingDate').value)
