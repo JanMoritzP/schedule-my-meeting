@@ -29,3 +29,40 @@ button {
 input {
     font-size: 16pt;
 }
+
+#homeButton {
+    position: absolute;
+    inset: 0 auto auto 0;
+    padding: 2rem;
+    background-color: var(--borderColor);
+    height: 1.9%;
+    color: white;
+    font-size: 20pt;
+    z-index: 1;
+    text-decoration: none;
+}
+
+#homeButton:visited {
+    color: white;
+}
+
+#mainHeader {
+    position: absolute;
+    color: black;
+    background-color: silver;
+    background-image: linear-gradient(var(--mainBgColorTransp) 45%, var(--borderColor) 50%, var(--mainBgColorTransp) 90%);
+    inset: 0 0 auto 0;
+    height: 7rem;
+    width: 100vw;
+    margin: 0;
+    padding: 2rem;
+    text-align: center;
+}
+
+@media only screen and (max-width: 400px) {
+    #mainHeader {
+        display: table;
+        white-space: pre-wrap;
+        height: 25vh;
+    }
+}

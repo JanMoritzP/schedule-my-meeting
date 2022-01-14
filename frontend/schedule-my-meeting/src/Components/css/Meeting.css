@@ -64,21 +64,6 @@ table {
     inset: 20% 4rem auto auto;
 }
 
-#homeButton {
-    position: absolute;
-    inset: 0 auto auto 0;
-    padding: 2rem;
-    background-color: var(--borderColor);
-    height: 1.9%;
-    color: white;
-    font-size: 20pt;
-    z-index: 1;
-    text-decoration: none;
-}
-
-#homeButton:visited {
-    color: white;
-}
 
 #loginDiv {
     position: absolute;
