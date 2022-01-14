@@ -2,9 +2,10 @@
     position: absolute;
     color: black;
     background-color: silver;
-    background-image: linear-gradient(var(--mainBgColor) 45%, var(--borderColor) 50%, var(--mainBgColor) 90%);
+    background-image: linear-gradient(var(--mainBgColorTransp) 45%, var(--borderColor) 50%, var(--mainBgColorTransp) 90%);
     inset: 0 0 auto 0;
     height: 7rem;
+    width: 100vw;
     margin: 0;
     padding: 2rem;
     text-align: center;
@@ -12,7 +13,7 @@
 
 #meetingLink {
     position: absolute;
-    inset: 0 auto auto -25rem;
+    inset: 20vh auto auto 1vw;
     height: 4rem;
     width: 10rem;
     margin: 1rem;
@@ -42,20 +43,20 @@
     height: fit-content;
     width: 50%;
     font-size: 16pt;
-    inset: 14% 20% auto auto;
+    inset: 14% auto auto 15vw;
     padding: 2rem;
     margin: 2rem;
-    box-shadow: 0px 0px 10px 15px var(--mainBgColor) inset;
+    box-shadow: 0px 0px 10px 15px var(--mainBgColorTransp) inset;
 }
 
 #contactWrapper {
     position: absolute;
-    inset: 17.2% 1% auto auto;
+    inset: 17.2vh 2vw auto auto;
     background-color: var(--borderColor);
     display: flex;
     flex-direction: column;
     width: 18%;
-    box-shadow: 0 0 10px 10px var(--mainBgColor) inset;
+    box-shadow: 0 0 10px 10px var(--mainBgColorTransp) inset;
     padding: 2rem 2rem 2.5rem 2rem;
 }
 
@@ -64,8 +65,75 @@
     margin: 0.5rem;
     padding: 0.5rem;
     border: 4px black solid;
+    max-width: 100vw;
 }
 
 p {
     font-size: 16pt;
+}
+
+@media only screen and (max-width: 1400px) {
+    #meetingLink {
+        inset: 0 auto auto 0;
+        height: 2vh;
+    }
+
+    #infoParagraph {
+        inset: 15vh auto auto 0;
+        box-shadow: none;
+        padding: none;
+        width: 40vw;
+    }
+
+    #contactWrapper {
+        inset: 18.5vh 10vw auto auto;
+        width: 30vw;
+        box-shadow: none;
+        padding: none;
+        margin: auto;
+    }
+}
+@media only screen and (max-width: 800px) {
+    #meetingLink {
+        inset: 65vh auto auto 30vw;
+    }
+
+    #infoParagraph {
+        inset: 80vh -1vw auto auto;
+        width: 88vw;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    #contactWrapper {
+        inset: 18vh auto auto 0;
+        width: 100vw;
+        margin: 0;
+        box-shadow: none;
+    }
+}
+@media only screen and (max-width: 400px) {
+    #meetingLink {
+        inset: 75vh auto auto 30vw;
+    }
+
+    #infoParagraph {
+        inset: 90vh -10vw auto auto;
+        width: 88vw;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    #contactWrapper {
+        inset: 28vh auto auto 0;
+        width: 100vw;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    #mainHeader {
+        display: table;
+        white-space: pre-wrap;
+        height: 25vh;
+    }
 }

@@ -6,13 +6,13 @@ export default function DefaultPage() {
 
     return(
         <div>
+            <Link to ={'/createNewMeeting'} id='meetingLink'>Create a Meeting</Link>
             <div id="infoParagraph">                
                 <h2 id="infoHeader">Welcome to schedule my meeting</h2>
-                <Link to ={'/createNewMeeting'} id='meetingLink'>Create a Meeting</Link>
                 <p>
                     You can use this website to create a meeting and then schedule it with your colleagues or friends.
                     You can click <Link to={'/createNewMeeting'}>here</Link> to create a new meeting or you the button on the left.
-                    Every meeting has to have a unique name. The unique name is case sensitive and can include numbers.
+                    Every meeting has to have a unique name. The unique name is case sensitive and can include numbers, uppercase and lowercase letters.
                     Every meeting lasts for up to two weeks, but if you are done with the meeting, please consider deleting it.
                 </p>
                 <h2>Why another meeting finder?</h2>
