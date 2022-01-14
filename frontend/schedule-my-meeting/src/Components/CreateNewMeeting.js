@@ -92,7 +92,7 @@ export default function CreateNewMeeting() {
             })
             .then(res => {
                 if(res.status === 200) {
-                    localStorage.setItem('password', e.target.password.value)
+                    localStorage.setItem('password' + name, e.target.password.value)
                     navigate("/meeting/" + name)
                 }
                 else {

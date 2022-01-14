@@ -19,7 +19,8 @@ router.post('/data/checkNewUser', (req, res) => {
         if(err) res.status(500).send({message: 'Error accessing the database'})
         else if(!meeting) res.status(404).send({messsage: 'There is no meeting with the id ' + req.body.meeting})
         else {
-            if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The entered password is incorrect'})
+            if(req.body.password === "" || req.body.password === undefined) res.status(403).send({message: "You have to provide a password"})
+            else if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The entered password is incorrect'})
             else if(meeting.participants.length === meeting.participantAmount) res.status(409).send({message: 'You cannot add another user, as the maxmimum amount has been reached'})
             else if(meeting.participants.includes(req.body.user)) res.status(409).send({message: 'This username is not unique'})
             else return res.status(200).send({message: 'This username is allowed'})

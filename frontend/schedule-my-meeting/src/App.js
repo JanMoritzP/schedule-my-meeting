@@ -11,8 +11,7 @@ function App() {
 
   return (
     <div>
-      <h1 id='mainHeader'>Schedule my meeting</h1>
-          
+      <h1 id='mainHeader'>Schedule my meeting</h1>          
           <Routes>
             <Route path="/createNewMeeting/" element={<CreateNewMeeting/>}/>
             <Route path="/meeting/:name" element={<Meeting/>}/>

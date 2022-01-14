@@ -51,7 +51,8 @@ router.post('/data/getBestTime', (req, res) => {
         if(err) res.status(500).send({message: 'Error accessing the database'})
         else if(!meeting) res.status(409).send({message: `There is no meeting named ${req.body.name}`})
         else {
-            if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The provided password is incorrect'})
+            if(req.body.password === "" || req.body.password === undefined) res.status(403).send({message: "You have to provide a password"})
+            else if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The entered password is incorrect'})
             else {
                 //Calc the best meeting time here
                 //Go through the time data and fill a vector and search through it. Then validate times and remove if not enough participants

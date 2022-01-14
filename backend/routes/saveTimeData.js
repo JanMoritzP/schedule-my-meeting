@@ -17,7 +17,8 @@ router.post('/data/saveTimeData', (req, res) => {
         if(err) res.status(500).send({message: 'Error accessing the database'})
         else if(!meeting) res.status(409).send({message: `There is no meeting named ${req.body.name}`})
         else {
-            if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The provided password is incorrect'})
+            if(req.body.password === "" || req.body.password === undefined) res.status(403).send({message: "You have to provide a password"})
+            else if(!meeting.validatePassword(req.body.password)) res.status(403).send({message: 'The entered password is incorrect'})
             else {
                 if(!meeting.participants.includes(req.body.user)) res.status(409).send({message: 'This user is not in the included meeting'})
                 else {

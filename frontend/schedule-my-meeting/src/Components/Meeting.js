@@ -22,7 +22,7 @@ export default function Meeting() {
     const navigate = useNavigate();
     
     useEffect(() => {
-        if(!localStorage.getItem('password'  + name)) return
+        if(localStorage.getItem('password' + name) === null) return
         fetch("http://localhost:3080/data/joinMeeting", {
             method: "POST", 
             headers: {
@@ -30,26 +30,27 @@ export default function Meeting() {
             },
             body: JSON.stringify({
                 name: name,
-                password: localStorage.getItem('password'  + name)
+                password: localStorage.getItem('password' + name)
             })
         })
         .then(res => {
             if(res.status === 200) {
-                setConfirmed(true);
-                return res.json()
+                setConfirmed(true)
             }
             else {
                 if(res.status === 409) {
                     navigate('/')
                 }
+                if(res.status === 403) {
+                    document.getElementById('badLogin').innerHTML = "Wrong password"
+                }
                 setConfirmed(false)
-                return false
             }
+            return res.json()
         })
         .then(data => {
-            if(data) putInfoInPage(data)
+            putInfoInPage(data)
         })
-
     }, [])
 
     useEffect(() => {
@@ -63,7 +64,7 @@ export default function Meeting() {
                     body: JSON.stringify({
                         user: currentUser,
                         meeting: name,
-                        password: localStorage.getItem('password'  + name)
+                        password: localStorage.getItem('password' + name)
                     })
                 })
                 .then(res => {
@@ -91,17 +92,22 @@ export default function Meeting() {
         .then(res => {
             if(res.status === 200) {
                 setConfirmed(true)
-                localStorage.setItem('password', password)
+                localStorage.setItem('password' + name, password)
             }
             else {
                 if(res.status === 409) {
                     navigate('/')
                 }
+                if(res.status === 403) {
+                    document.getElementById('badLogin').innerHTML = "Wrong password"
+                }
                 setConfirmed(false)
             }
             return res.json()
         })
-        .then(data => putInfoInPage(data))
+        .then(data => {
+            putInfoInPage(data)
+        })
     }
 
     const pad2 = string => {
@@ -131,6 +137,7 @@ export default function Meeting() {
     }
 
     const putInfoInPage = data => {
+        if(data.message !== undefined) return
         let users = data.participants
         setParticipants(data.participants)
         let participantAmount = data.participantAmount
@@ -589,7 +596,7 @@ export default function Meeting() {
                 navigate('/')
             }
             else {
-                document.getElementById('errorParagraph').innerHTML = res.message
+                document.getElementById('errorParagraph').innerHTML = "Meeting could not be deleted"
             }
             return res.json()
         })
@@ -672,6 +679,12 @@ export default function Meeting() {
         }
         typeChanged(choice)
     }
+
+    const loginEnter = async e => {        
+        if(e === 'Enter') {
+            login()
+        }
+    }
     
     if(!confirmed) {
         return (
@@ -679,8 +692,9 @@ export default function Meeting() {
                 <a href='/' id='homeButton'>Take me home</a>      
                 <div id='loginDiv'>
                     <label for="password">Please provide a password</label>
-                    <input type="password" name="password" id="password" onChange={e => setPassword(e.target.value)}></input>
+                    <input type="password" name="password" id="password" onChange={e => setPassword(e.target.value)} onKeyPress={e => loginEnter(e.key)}></input>
                     <button onClick={login}>Login</button>
+                    <p id='badLogin'></p>
                 </div>     
             </div>
         )
