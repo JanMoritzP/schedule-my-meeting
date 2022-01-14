@@ -75,7 +75,7 @@ export default function DefaultPage() {
             </div>
             <div id='contactWrapper'>
                 <p id='personal'>This website was designed and build by Jan Moritz Pocher</p>
-                <p id='contact'>If you need to contact me, feel free to send me an email to: <br />info@localhost:3080</p>
+                <p id='contact'>If you need to contact me, feel free to send me an email to: <br />info@schedule-my-meeting</p>
                 <p id='github'>If you find there to be problem with this website, please feel free to open an issue on <a target="_blank" href='https://github.com/JanMoritzP/schedule-my-meeting/issues/new?assignees=JanMoritzP&labels=bug&template=issue.md&title='>my Github</a></p>
             </div>
         </div>
