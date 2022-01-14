@@ -203,6 +203,10 @@ export default function CreateNewMeeting() {
         }
     }
 
+    const handleNameInput = async e => {
+        setName(e.target.value.replace(/[^a-zA-Z\d\S]+/g, ""))
+    }
+
     return(
         <div>
             <a href='/' id='homeButton'>Take me home</a>
@@ -211,7 +215,7 @@ export default function CreateNewMeeting() {
                 <form onSubmit={handleSubmit}>
                     <div id='nameDiv'>
                         <label for="name" id='labelName'>Name of the meeting</label>
-                        <input type="text" id="name" name="name" onChange={e => setName(e.target.value)}></input>
+                        <input type="text" id="name" name="name" value={name} onChange={e => handleNameInput(e)}></input>
                     </div>
                     <div id='passwordDiv'>
                         <label for="password" id='labelPassword'>Password of the meeting</label>
