@@ -5,10 +5,7 @@ import DefaultPage from './Components/DefaultPage';
 import CreateNewMeeting from './Components/CreateNewMeeting';
 import Meeting from './Components/Meeting'
 
-function App() {
-
-
-
+function App() { 
   return (
     <div>
       <h1 id='mainHeader'>Schedule my meeting</h1>          

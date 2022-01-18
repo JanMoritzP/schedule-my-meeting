@@ -59,10 +59,10 @@ input {
     text-align: center;
 }
 
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 386px) {
     #mainHeader {
         display: table;
         white-space: pre-wrap;
-        height: 25vh;
+        height: 16rem;
     }
 }
