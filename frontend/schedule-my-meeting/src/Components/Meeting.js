@@ -23,7 +23,7 @@ export default function Meeting() {
     
     useEffect(() => {
         if(localStorage.getItem('password' + name) === undefined || localStorage.getItem('password' + name) === null) return
-        fetch("http://schedule-my-meeting.com/data/joinMeeting", {
+        fetch("https://schedule-my-meeting.com/data/joinMeeting", {
             method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ export default function Meeting() {
     useEffect(() => {
         const delayUniqueNameCheck = setTimeout(() => {
             if(currentUser !== "" && currentUser !== "Add new User") {
-                fetch("http://schedule-my-meeting.com/data/checkNewUser", {
+                fetch("https://schedule-my-meeting.com/data/checkNewUser", {
                     method: "POST", 
                     headers: {
                         'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ export default function Meeting() {
     }, [currentUser])
     
     const login = async e => {
-        fetch("http://schedule-my-meeting.com/data/joinMeeting", {
+        fetch("https://schedule-my-meeting.com/data/joinMeeting", {
             method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
@@ -475,7 +475,7 @@ export default function Meeting() {
         selectedElems.map(elem => {
             return data.push(elem.id.split(';')[0] + ";" + elem.id.split(';')[1] + ";" + elem.classList[2] + ";" + participants.indexOf(currentUser))
         })
-        fetch("http://schedule-my-meeting.com/data/saveTimeData", {
+        fetch("https://schedule-my-meeting.com/data/saveTimeData", {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
@@ -502,7 +502,7 @@ export default function Meeting() {
         var checked = false
         if(currentUser === "Add new User" || currentUser === "" || currentUser === "Results") alert("Not allowed")
         else if(name !== "") {
-            fetch("http://schedule-my-meeting.com/data/getTimeData", {
+            fetch("https://schedule-my-meeting.com/data/getTimeData", {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
@@ -532,7 +532,7 @@ export default function Meeting() {
         var checked = true
         if(currentUser === "Add new User" || currentUser === "" || currentUser === "Results") alert("Not allowed")
         else if(name !== "") {
-            fetch("http://schedule-my-meeting.com/data/addNewUser", {
+            fetch("https://schedule-my-meeting.com/data/addNewUser", {
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
@@ -581,7 +581,7 @@ export default function Meeting() {
 
     function deleteMeeting() {
 
-        fetch("http://schedule-my-meeting.com/data/deleteMeeting", {
+        fetch("https://schedule-my-meeting.com/data/deleteMeeting", {
             method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
@@ -603,7 +603,7 @@ export default function Meeting() {
     }
 
     function generateMeeting() {
-        fetch("http://schedule-my-meeting.com/data/getBestTime", {
+        fetch("https://schedule-my-meeting.com/data/getBestTime", {
             method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
