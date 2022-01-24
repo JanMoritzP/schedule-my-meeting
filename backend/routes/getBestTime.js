@@ -5,7 +5,7 @@ router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
 router.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'Content-Type, Accept')
-    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Origin', 'https://www.schedule-my-meeting.com')
     next();
 })
 
